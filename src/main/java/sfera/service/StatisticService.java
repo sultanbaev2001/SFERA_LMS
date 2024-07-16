@@ -26,7 +26,7 @@ public class StatisticService {
     public ApiResponse getAllCount(){
         Integer teacherCount = userRepository.countByRoleAndActiveTrue(ERole.ROLE_TEACHER);
         Integer studentCount = userRepository.countByRoleAndActiveTrue(ERole.ROLE_STUDENT);
-        Integer categoryCount = categoryRepository.countByIsActiveTrue();
+        Integer categoryCount = categoryRepository.countByActiveTrue();
         Integer groupCount = groupRepository.countByActiveTrue();
         StatisticDto statisticDto = StatisticDto.builder()
                 .teacherCount(teacherCount)
@@ -37,7 +37,7 @@ public class StatisticService {
         return new ApiResponse("Success",true, HttpStatus.OK,statisticDto);
     }
     public ApiResponse getPercentageByCategory(){
-        List<Category> categories = categoryRepository.findByIsActiveTrue();
+        List<Category> categories = categoryRepository.findByActiveTrue();
         Integer student = userRepository.countByRoleAndActiveTrue(ERole.ROLE_STUDENT);
         List<ResCategory> resCategoryList= new ArrayList<>();
         if (categories.isEmpty()){
