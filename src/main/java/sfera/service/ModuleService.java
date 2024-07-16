@@ -31,5 +31,6 @@ public class ModuleService {
                     .build();
             moduleRepository.save(module);
         }
+        return new ApiResponse("Module saved", HttpStatus.CREATED);
     }
 }
