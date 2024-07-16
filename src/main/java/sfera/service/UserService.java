@@ -112,8 +112,6 @@ public class UserService {
         userRepository.save(user);
         return new ApiResponse("Successfully edited user",true, HttpStatus.OK,user);
     }
-    private final PasswordEncoder passwordEncoder;
-    private final GroupRepository groupRepository;
 
     public ApiResponse saveStudent(StudentDTO studentDTO) {
         boolean existsed = userRepository.existsByPhoneNumberAndIdNot(studentDTO.getPhoneNumber(),studentDTO.getId());
