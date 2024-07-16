@@ -6,7 +6,6 @@ import sfera.entity.Group;
 import sfera.entity.User;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface GroupRepository extends JpaRepository<Group, Integer> {
 
