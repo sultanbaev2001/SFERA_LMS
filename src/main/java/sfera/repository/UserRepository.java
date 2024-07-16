@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import sfera.entity.Category;
 import sfera.entity.Group;
-import org.springframework.data.jpa.repository.Query;
 import sfera.entity.User;
 import sfera.entity.enums.ERole;
 
@@ -20,8 +19,16 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Integer countAllByGroup_CategoryAndRoleAndActiveTrue(Category category, ERole role);
 
+    boolean existsByPhoneNumber(String phoneNumber);
+
     @Query("SELECT u FROM User u WHERE u.role = 'ROLE_TEACHER' AND u.active = true")
     List<User> findActiveTeachers();
+
+    @Query("SELECT u FROM User u WHERE u.role= 'ROLE_TEACHER'")
+    List<User> findUser();
+
+    Integer countAllByGroupAndRole(Group group, ERole role);
+
 
     boolean existsByPhoneNumberAndIdNot(String phoneNumber, UUID id);
 

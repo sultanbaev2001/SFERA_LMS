@@ -2,6 +2,7 @@ package sfera.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "groups")
 public class Group {
@@ -27,7 +29,6 @@ public class Group {
     private List<DayOfWeek> days;
     @ManyToOne
     private User teacher;
-
     private boolean active;
 
     private LocalDate startDate;
