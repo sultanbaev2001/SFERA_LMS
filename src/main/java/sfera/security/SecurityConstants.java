@@ -2,9 +2,7 @@ package sfera.security;
 
 public class SecurityConstants {
     public static final String[] WHITE_LIST = {
-            "/region/**",
-            "/auth/forgot-password",
-            "/auth/**",
+            "/auth/login",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v2/api-docs",
