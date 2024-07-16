@@ -3,6 +3,7 @@ package sfera.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import sfera.entity.Category;
+import sfera.entity.Group;
 import sfera.entity.User;
 import sfera.entity.enums.ERole;
 
@@ -25,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u FROM User u WHERE u.role= 'ROLE_TEACHER'")
     List<User> findUser();
+
+    Integer countAllByGroupAndRole(Group group, ERole role);
+
 }

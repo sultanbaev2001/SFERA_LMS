@@ -15,4 +15,5 @@ public class ResTeacher {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private boolean active;
 }
