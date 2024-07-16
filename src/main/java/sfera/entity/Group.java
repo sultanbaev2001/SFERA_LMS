@@ -26,7 +26,7 @@ public class Group {
     @OneToMany
     private List<DayOfWeek> days;
     @ManyToOne
-    private User teacherId;
+    private User teacher;
 
     private LocalDate startDate;
     private LocalTime startTime;

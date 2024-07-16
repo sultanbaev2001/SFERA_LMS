@@ -30,8 +30,6 @@ public class User implements UserDetails {
     private String phoneNumber;
     @Column(nullable = false)
     private String password;
-    private boolean asActive;
-
     private boolean active;
 
     @Enumerated(EnumType.STRING)
