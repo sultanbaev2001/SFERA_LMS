@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u FROM User u WHERE u.role = 'ROLE_TEACHER' AND u.active = true")
     List<User> findActiveTeachers();
+
+    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_STUDENT' AND u.active = true")
+    List<User> findActiveStudent();
 }

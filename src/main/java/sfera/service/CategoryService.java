@@ -30,7 +30,7 @@ public class CategoryService {
             categoryRepository.save(category);
             return new ApiResponse("Success", true, HttpStatus.OK, null);
         }
-        return new ApiResponse("Category already exsist", true, HttpStatus.OK, null);
+        return new ApiResponse("Category already exsist", false, HttpStatus.BAD_REQUEST, null);
     }
 
 
@@ -62,7 +62,7 @@ public class CategoryService {
             categoryRepository.save(category);
             return new ApiResponse("Success", true, HttpStatus.OK, null);
         }
-        return new ApiResponse("Category already exist", true, HttpStatus.OK, null);
+        return new ApiResponse("Category already exist", false, HttpStatus.BAD_REQUEST, null);
     }
 
     public ApiResponse deleteCategory(Integer id) {
