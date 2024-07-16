@@ -31,5 +31,5 @@ public class Group {
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private boolean isActive;
+    private boolean active;
 }
