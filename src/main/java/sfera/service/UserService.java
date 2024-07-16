@@ -14,13 +14,8 @@ import sfera.payload.req.ReqTeacher;
 import sfera.payload.res.ResGroupStudentCount;
 import sfera.payload.res.ResTeacher;
 import sfera.repository.GroupRepository;
-import sfera.entity.Group;
-import sfera.entity.User;
-import sfera.entity.enums.ERole;
 import sfera.exception.GenericException;
-import sfera.payload.ApiResponse;
 import sfera.payload.StudentDTO;
-import sfera.repository.GroupRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -112,8 +107,7 @@ public class UserService {
         userRepository.save(user);
         return new ApiResponse("Successfully edited user",true, HttpStatus.OK,user);
     }
-    private final PasswordEncoder passwordEncoder;
-    private final GroupRepository groupRepository;
+
 
     public ApiResponse saveStudent(StudentDTO studentDTO) {
         boolean existsed = userRepository.existsByPhoneNumberAndIdNot(studentDTO.getPhoneNumber(),studentDTO.getId());
