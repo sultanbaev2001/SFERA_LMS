@@ -20,6 +20,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Integer countAllByGroup_CategoryAndRoleAndActiveTrue(Category category, ERole role);
 
-    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_TEACHER' AND u.isActive = true")
+    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_TEACHER' AND u.active = true")
     List<User> findActiveTeachers();
 }

@@ -31,6 +31,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    private boolean active;
+
     @Enumerated(EnumType.STRING)
     private ERole role;
     @OneToOne
@@ -55,7 +57,6 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
-    private boolean active;
 
 
     @Override

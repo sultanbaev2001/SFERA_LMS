@@ -11,5 +11,5 @@ public class CategoryDTO {
         private Integer categoryId;
         private String name;
         private String description;
-        private boolean isActive;
+        private boolean active;
 }
