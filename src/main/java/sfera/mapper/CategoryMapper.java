@@ -14,7 +14,7 @@ public interface CategoryMapper {
     @Mapping(source = "categoryId", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
-    @Mapping(source = "isActive", target = "isActive")
+    @Mapping(source = "active", target = "isActive")
     Category toEntity(CategoryDTO categoryDTO);
 
 
@@ -22,6 +22,6 @@ public interface CategoryMapper {
     @Mapping(source = "id", target = "categoryId")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
-    @Mapping(source = "isActive", target = "isActive")
+    @Mapping(source = "isActive", target = "active")
     CategoryDTO toDTO(Category category);
 }
