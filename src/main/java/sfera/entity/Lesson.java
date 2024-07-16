@@ -18,6 +18,9 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+
+    @ManyToOne
+    private Module module;
     @OneToMany
     private List<Task> taskList;
     @UpdateTimestamp
