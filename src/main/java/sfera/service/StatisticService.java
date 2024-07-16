@@ -12,8 +12,7 @@ import sfera.repository.CategoryRepository;
 import sfera.repository.GroupRepository;
 import sfera.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,19 +53,6 @@ public class StatisticService {
         }
         return new ApiResponse("Success",true,HttpStatus.OK,resCategoryList);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
