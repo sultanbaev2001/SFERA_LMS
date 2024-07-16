@@ -29,4 +29,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Integer countAllByGroupAndRole(Group group, ERole role);
 
+
+    boolean existsByPhoneNumberAndIdNot(String phoneNumber, UUID id);
+
+    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_STUDENT' AND u.active = true")
+    List<User> findActiveStudent();
 }

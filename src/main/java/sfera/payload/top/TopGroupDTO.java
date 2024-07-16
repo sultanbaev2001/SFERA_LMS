@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class topGroupDTO {
+public class TopGroupDTO {
     private Integer groupId;
     private String groupName;
     private Integer rating;

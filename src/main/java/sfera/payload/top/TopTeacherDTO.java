@@ -2,16 +2,18 @@ package sfera.payload.top;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class topTeacherDTO {
-    private Integer teacherId;
+public class TopTeacherDTO {
+    private UUID teacherId;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String categoryName;
-    private Integer rating;
+    private Double rating;
 }

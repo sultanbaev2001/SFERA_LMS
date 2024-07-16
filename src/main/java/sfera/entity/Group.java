@@ -29,9 +29,9 @@ public class Group {
     private List<DayOfWeek> days;
     @ManyToOne
     private User teacher;
+    private boolean active;
 
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private boolean active;
 }
