@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sfera.entity.enums.ERole;
 
-import java.awt.desktop.AboutEvent;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;

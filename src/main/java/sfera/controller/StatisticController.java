@@ -1,5 +1,6 @@
 package sfera.controller;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,13 @@ public class StatisticController {
     @GetMapping("countBy/")
     public ResponseEntity<ApiResponse> getAllCountByStatistic(){
         ApiResponse apiResponse = statisticService.getAllCount();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("percentage/")
+    public ResponseEntity<ApiResponse> getPercentageStatistic(){
+        ApiResponse apiResponse = statisticService.getPercentageByCategory();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
