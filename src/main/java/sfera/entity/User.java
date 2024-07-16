@@ -26,7 +26,9 @@ public class User implements UserDetails {
     private UUID id;
     private String firstname;
     private String lastname;
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -38,8 +40,10 @@ public class User implements UserDetails {
     @OneToMany
     private List<Feedback> feedbacks;
     @CreationTimestamp
+    @Column(updatable = false)
     private Timestamp createdAt;
     @UpdateTimestamp
+    @Column(insertable = false)
     private Timestamp updatedAt;
 
     private boolean accountNonExpired;
