@@ -32,7 +32,6 @@ public class User implements UserDetails {
     private String phoneNumber;
     @Column(nullable = false)
     private String password;
-
     private boolean active;
 
     @Enumerated(EnumType.STRING)
@@ -41,8 +40,7 @@ public class User implements UserDetails {
     private Contact contact;
     @ManyToOne
     private Group group;
-    @OneToMany
-    private List<Feedback> feedbacks;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Timestamp createdAt;

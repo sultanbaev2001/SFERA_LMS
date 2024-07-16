@@ -17,6 +17,6 @@ public class LessonTracking {
     private Group group;
     @ManyToOne
     private Lesson lesson;
-    private boolean isAvailable;
+    private boolean active;
 
 }

@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sfera.payload.ApiResponse;
 import sfera.payload.StudentDTO;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import sfera.service.UserService;
 
 import java.util.UUID;

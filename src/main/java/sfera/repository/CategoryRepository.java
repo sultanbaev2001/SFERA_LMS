@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-    Integer countByIsActiveTrue();
+    Integer countByActiveTrue();
 
-    List<Category> findByIsActiveTrue();
+    List<Category> findByActiveTrue();
     boolean existsByName(String name);
 }
