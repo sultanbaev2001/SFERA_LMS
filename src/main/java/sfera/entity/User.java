@@ -24,6 +24,4 @@ public class User {
     private ERole role;
     @OneToOne
     private Contact contact;
-
-
 }
