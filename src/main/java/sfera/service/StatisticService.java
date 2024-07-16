@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sfera.entity.Category;
+import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.payload.ApiResponse;
 import sfera.payload.StatisticDto;
 import sfera.payload.res.ResCategory;
 import sfera.repository.CategoryRepository;
 import sfera.repository.GroupRepository;
+import sfera.repository.HomeWorkRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -21,6 +23,7 @@ public class StatisticService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
+    private final HomeWorkService homeWorkService;
 
     public ApiResponse getAllCount(){
         Integer teacherCount = userRepository.countByRoleAndActiveTrue(ERole.ROLE_TEACHER);
@@ -67,6 +70,20 @@ public class StatisticService {
 
 
 //    TOP Teacher, student and group service
+
+//    Student
+    public ApiResponse getTopStudent(User student){
+
+        Map<UUID, Integer> topStudentMap = new HashMap<>();
+        for (User user : userRepository.findActiveStudent()) {
+            Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(student);
+            topStudentMap.put(user.getId(), score);
+        }
+
+
+
+        return null;
+    }
 
 //    Teacher
 //    public ApiResponse getTopTeacher(){
