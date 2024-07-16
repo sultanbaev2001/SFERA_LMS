@@ -57,29 +57,29 @@ public class UserController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-
-    @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    @PostMapping("/saveStudent")
     public ResponseEntity<ApiResponse> saveStudent(StudentDTO studentDTO) {
         ApiResponse apiResponse = userService.saveStudent(studentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-
-    @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    @GetMapping("/getAllStudents")
     public ResponseEntity<ApiResponse> getAllStudents() {
         ApiResponse apiResponse = userService.getAllStudents();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-
-    @PutMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    @PutMapping("/updateStudent")
     public ResponseEntity<ApiResponse> updateStudent(StudentDTO studentDTO) {
         ApiResponse apiResponse = userService.updateStudent(studentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-
-    @DeleteMapping("/{studentId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    @DeleteMapping("/deleteStudent/{studentId}")
     public ResponseEntity<ApiResponse> deleteStudent(@PathVariable UUID studentId) {
         ApiResponse apiResponse = userService.deleteStudent(studentId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
