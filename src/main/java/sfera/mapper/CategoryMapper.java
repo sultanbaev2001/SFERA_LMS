@@ -1,7 +1,5 @@
 package sfera.mapper;
 
-
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import sfera.entity.Category;
@@ -14,7 +12,7 @@ public interface CategoryMapper {
     @Mapping(source = "categoryId", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
-    @Mapping(source = "isActive", target = "isActive")
+    @Mapping(source = "active", target = "active")
     Category toEntity(CategoryDTO categoryDTO);
 
 
@@ -22,6 +20,6 @@ public interface CategoryMapper {
     @Mapping(source = "id", target = "categoryId")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
-    @Mapping(source = "isActive", target = "isActive")
+    @Mapping(source = "active", target = "active")
     CategoryDTO toDTO(Category category);
 }
