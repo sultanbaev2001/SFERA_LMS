@@ -5,20 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class HomeWork {
+public class LessonTracking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    private Task task;
+    private Group group;
     @ManyToOne
-    private User student;
-    private String solution;
-    private Integer score;
+    private Lesson lesson;
+    private boolean isAvailable;
 
 }

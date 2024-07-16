@@ -13,11 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "groups")
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false, unique = true)
     private String name;
     @ManyToOne
     private Category category;
@@ -25,6 +27,7 @@ public class Group {
     private List<DayOfWeek> days;
     @ManyToOne
     private User teacherId;
+
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalTime endTime;

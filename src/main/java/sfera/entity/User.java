@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sfera.entity.enums.ERole;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -23,12 +26,25 @@ public class User implements UserDetails {
     private UUID id;
     private String firstname;
     private String lastname;
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
+    @Column(nullable = false)
     private String password;
+
     @Enumerated(EnumType.STRING)
     private ERole role;
     @OneToOne
     private Contact contact;
+    @ManyToOne
+    private Group group;
+    @OneToMany
+    private List<Feedback> feedbacks;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdAt;
+    @UpdateTimestamp
+    @Column(insertable = false)
+    private Timestamp updatedAt;
 
     private boolean accountNonExpired;
     private boolean credentialsNonExpired;
