@@ -25,5 +25,7 @@ public class User {
     @OneToOne
     private Contact contact;
 
+    private boolean active;
+
 
 }
