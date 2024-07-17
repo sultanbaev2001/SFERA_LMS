@@ -42,13 +42,8 @@ public class HomeWorkService {
     }
 
 
-
-    public Integer getHomeworksByStudentAndPreviousMonth(User student) {
-        LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1); // Oldingi oyning birinchi kuni
-        LocalDate endDate = LocalDate.now().withDayOfMonth(1).minusDays(1); // Joriy oyning birinchi kuni oldin
-        return homeWorkRepository.findTotalScoreByStudentsAndPeriod(student, startDate, endDate);
-    }
-
+//    O'tgan oyning lessonlar boyicha student toplashi kerak bolgan umumiy ballar va homeworklar boyicha
+//    to'plagan ballarini nisbatini olib beradi -> allHomeworksScore/allLessonsScore
     public double getHomeworksByStudentPercentageOfMonth(User student) {
         int sum=0; Object checkLesson=null;
         LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1); // Oldingi oyning birinchi kuni
@@ -64,7 +59,6 @@ public class HomeWorkService {
             }
         }
         return (double) score/sum;
-
     }
 
 

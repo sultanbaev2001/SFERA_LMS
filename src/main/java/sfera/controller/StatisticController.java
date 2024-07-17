@@ -42,5 +42,18 @@ public class StatisticController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("top/group")
+    public ResponseEntity<ApiResponse> getTopGroup(){
+        ApiResponse apiResponse = statisticService.getTopGroup();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("top/teacher")
+    public ResponseEntity<ApiResponse> getTopTeacher(){
+        ApiResponse apiResponse = statisticService.getTopTeacher();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 }

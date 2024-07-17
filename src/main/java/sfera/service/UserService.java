@@ -69,7 +69,7 @@ public class UserService {
 
     public ApiResponse getTeacher(UUID teacherId){
         User user = userRepository.findById(teacherId).orElseThrow(UserNotFoundException::new);
-        List<Group> groups = groupRepository.findAllByTeacher(user);
+        List<Group> groups = groupRepository.findAllByTeacherId(user.getId());
         List<ResGroupStudentCount> resGroupStudentCounts=new ArrayList<>();
         Set<String> categoryName=new HashSet<>();
         for (Group group : groups){

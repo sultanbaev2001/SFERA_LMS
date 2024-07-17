@@ -14,5 +14,5 @@ public class TopStudentDTO {
     private String firstName;
     private String lastName;
     private String groupName;
-    private Integer ball;
+    private Integer score;
 }

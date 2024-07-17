@@ -22,22 +22,15 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    @Query("SELECT u FROM User u WHERE u.role = :role AND u.active = true")
-    List<User> findActiveRole(@Param("role") ERole role);
-
-    @Query("SELECT u FROM User u WHERE u.role= 'ROLE_TEACHER'")
-    List<User> findUser();
 
     Integer countAllByGroupAndRole(Group group, ERole role);
 
 
     boolean existsByPhoneNumberAndIdNot(String phoneNumber, UUID id);
 
-    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_STUDENT' AND u.active = true")
-    List<User> findActiveStudent();
 
     List<User> findByRole(ERole role);
 
- }
-    List<User> findAllByGroup(Group group);
+
+    List<User> findAllByGroupId(Integer groupId);
 }
