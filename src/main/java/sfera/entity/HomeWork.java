@@ -24,4 +24,5 @@ public class HomeWork {
     private Integer score;
     private LocalDate dueDate;
 
+
 }
