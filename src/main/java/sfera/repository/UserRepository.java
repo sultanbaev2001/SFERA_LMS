@@ -2,6 +2,7 @@ package sfera.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import sfera.entity.Category;
 import sfera.entity.Group;
 import sfera.entity.User;
@@ -21,8 +22,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_TEACHER' AND u.active = true")
-    List<User> findActiveTeachers();
+    @Query("SELECT u FROM User u WHERE u.role = :role AND u.active = true")
+    List<User> findActiveRole(@Param("role") ERole role);
 
     @Query("SELECT u FROM User u WHERE u.role= 'ROLE_TEACHER'")
     List<User> findUser();
@@ -32,6 +33,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByPhoneNumberAndIdNot(String phoneNumber, UUID id);
 
-    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_STUDENT' AND u.active = true")
-    List<User> findActiveStudent();
+    List<User> findAllByGroup(Group group);
 }

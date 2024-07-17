@@ -17,6 +17,7 @@ public class StatisticController {
 
     private final StatisticService statisticService;
 
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("countBy/")
     public ResponseEntity<ApiResponse> getAllCountByStatistic(){
@@ -24,11 +25,22 @@ public class StatisticController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("percentage/")
     public ResponseEntity<ApiResponse> getPercentageStatistic(){
         ApiResponse apiResponse = statisticService.getPercentageByCategory();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("top/student")
+    public ResponseEntity<ApiResponse> getTopStudent(){
+        ApiResponse apiResponse = statisticService.getTopStudent();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+
 
 }

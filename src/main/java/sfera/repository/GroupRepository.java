@@ -10,7 +10,12 @@ import java.util.List;
 public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     Integer countByActiveTrue();
+
     List<Group> findAllByTeacher(User teacher);
+
     boolean existsByName(String name);
+
     boolean existsByNameAndIdNot(String name, int id);
+
+    List<Group> findAllByActiveTrue();
 }
