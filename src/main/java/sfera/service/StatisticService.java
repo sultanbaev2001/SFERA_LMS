@@ -1,19 +1,22 @@
 package sfera.service;
 
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sfera.entity.Category;
+import sfera.entity.Group;
 import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.payload.ApiResponse;
 import sfera.payload.StatisticDto;
 import sfera.payload.res.ResCategory;
-import sfera.repository.*;
+import sfera.payload.top.TopGroupDTO;
+import sfera.payload.top.TopStudentDTO;
+import sfera.payload.top.TopTeacherDTO;
+import sfera.repository.CategoryRepository;
+import sfera.repository.GroupRepository;
+import sfera.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.*;
 
 @Service
@@ -23,8 +26,6 @@ public class StatisticService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
-    private final LessonRepository lessonRepository;
-    private final HomeWorkRepository homeWorkRepository;
     private final HomeWorkService homeWorkService;
 
     public ApiResponse getAllCount(){
@@ -81,65 +82,102 @@ public class StatisticService {
 //    TOP Teacher, student and group service
 
 //    Student
-    public ApiResponse getTopStudent(User student){
+    public ApiResponse getTopStudent(){
 
-        Map<UUID, Integer> topStudentMap = new HashMap<>();
-        for (User user : userRepository.findActiveStudent()) {
-            Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(student);
-            topStudentMap.put(user.getId(), score);
+        List<TopStudentDTO> studentList = new ArrayList<>();
+        Map<TopStudentDTO, Integer> topStudentMap = new HashMap<>();
+        List<User> activeStudents = userRepository.findByRole(ERole.ROLE_STUDENT);
+        if (!activeStudents.isEmpty()){
+            for (User user : activeStudents) {
+                if (user.isActive()){
+                    Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
+                    TopStudentDTO topStudentDTO = TopStudentDTO.builder()
+                            .studentId(user.getId())
+                            .firstName(user.getFirstname())
+                            .lastName(user.getLastname())
+                            .groupName(user.getGroup().getName())
+                            .score(score)
+                            .build();
+                    topStudentMap.put(topStudentDTO, score);
+                }
+            }
+
+            List<TopStudentDTO> topStudens = topStudentMap.entrySet().stream()
+                    .sorted(Map.Entry.<TopStudentDTO, Integer>comparingByValue().reversed())
+                    .limit(5)
+                    .map(Map.Entry::getKey)
+                    .toList();
+
+            return new ApiResponse("Success", true, HttpStatus.OK, topStudens);
         }
-
-
-
-        return null;
+        return new ApiResponse("Failed", false, HttpStatus.BAD_REQUEST, null);
     }
 
+
+//    Group
+
+    public ApiResponse getTopGroup(){
+        Map<TopGroupDTO, Integer> topGroupMap = new HashMap<>();
+        List<Group> groups = groupRepository.findAllByActiveTrue();
+        if (!groups.isEmpty()){
+            for (Group group : groups) {
+                Integer score = homeWorkService.getTotalScoreByGroupAndCurrentMonth(group);
+                TopGroupDTO topGroupDTO = TopGroupDTO.builder()
+                        .groupId(group.getId())
+                        .groupName(group.getName())
+                        .score(score)
+                        .build();
+                topGroupMap.put(topGroupDTO, score);
+            }
+
+            List<TopGroupDTO> topGroups = topGroupMap.entrySet().stream()
+                    .sorted(Map.Entry.<TopGroupDTO, Integer>comparingByValue().reversed())
+                    .limit(5)
+                    .map(Map.Entry::getKey)
+                    .toList();
+
+            return new ApiResponse("Success", true, HttpStatus.OK, topGroups);
+        }
+        return new ApiResponse("Failed", false, HttpStatus.BAD_REQUEST, null);
+    }
+
+
 //    Teacher
-//    public ApiResponse getTopTeacher(){
-//        Map<UUID, Double> topTeacherMap = new HashMap<>();
-//        List<TopTeacherDTO> teacherList = new ArrayList<>();
-//        List<User> activeTeachers = userRepository.findActiveTeachers();
-//        if (!activeTeachers.isEmpty()){
-//            for (User activeTeacher : activeTeachers) {
-//                double sum=0;
-//                int count = feedbackRepository.countByTeacherId(activeTeacher.getId());
-//                for (Feedback feedback : feedbackRepository.findByTeacherId(activeTeacher.getId())) {
-//                    sum+=feedback.getRate();
-//                }
-//                TopTeacherDTO topTeacherDTO = TopTeacherDTO.builder()
-//                        .teacherId(activeTeacher.getId())
-//                        .firstName(activeTeacher.getFirstname())
-//                        .lastName(activeTeacher.getLastname())
-//                        .phoneNumber(activeTeacher.getPhoneNumber())
-//                        .rating(sum/count)
-//                        .build();
-//                topTeacherMap.put(topTeacherDTO.getTeacherId(), topTeacherDTO.getRating());
-//                teacherList.add(topTeacherDTO);
-//            }
-//
-//            List<UUID> topTeacherList = topTeacherMap.entrySet().stream()
-//                    .sorted(Map.Entry.<UUID, Double>comparingByValue().reversed())
-//                    .limit(5)
-//                    .map(Map.Entry::getKey)
-//                    .toList();
-//
-//            List<TopTeacherDTO> topTeachers = new ArrayList<>();
-//            for (UUID topTeacher : topTeacherList) {
-//                for (TopTeacherDTO teachers : teacherList) {
-//                    if (teachers.getTeacherId()==topTeacher){
-//                        topTeachers.add(teachers);
-//                        break;
-//                    }
-//                }
-//            }
-//            return new ApiResponse("Success", true, HttpStatus.OK, topTeachers);
-//        }
-//        return new ApiResponse("No active teachers found", false, HttpStatus.BAD_REQUEST, null);
-//    }
 
+    public ApiResponse getTopTeacher(){
+        Map<TopTeacherDTO, Integer> topTeacherMap = new HashMap<>();
+        List<User> teachers = userRepository.findByRole(ERole.ROLE_TEACHER);
+        if (teachers.isEmpty()){
+            for (User teacher : teachers) {
+                if (teacher.isActive()){
+                    int sumScore = 0;
+                    for (Group group : groupRepository.findAllByTeacherId(teacher.getId())) {
+                        if (group.isActive()){
+                            Integer score = homeWorkService.getTotalScoreByGroupAndCurrentMonth(group);
+                            sumScore+=score;
+                        }
+                    }
+                    TopTeacherDTO topTeacherDTO = TopTeacherDTO.builder()
+                            .teacherId(teacher.getId())
+                            .firstName(teacher.getFirstname())
+                            .lastName(teacher.getLastname())
+                            .phoneNumber(teacher.getPhoneNumber())
+                            .score(sumScore)
+                            .build();
 
+                    topTeacherMap.put(topTeacherDTO, sumScore);
+                }
+            }
 
-//    Student
+            List<TopTeacherDTO> topTeachers = topTeacherMap.entrySet().stream()
+                    .sorted(Map.Entry.<TopTeacherDTO, Integer>comparingByValue().reversed())
+                    .limit(5)
+                    .map(Map.Entry::getKey)
+                    .toList();
 
+            return new ApiResponse("Success", true, HttpStatus.OK, topTeachers);
+        }
+        return new ApiResponse("Failed", false, HttpStatus.BAD_REQUEST, null);
+    }
 
 }

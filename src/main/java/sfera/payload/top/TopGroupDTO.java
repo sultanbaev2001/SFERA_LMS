@@ -10,6 +10,6 @@ import lombok.*;
 public class TopGroupDTO {
     private Integer groupId;
     private String groupName;
-    private Integer rating;
+    private Integer score;
 
 }
