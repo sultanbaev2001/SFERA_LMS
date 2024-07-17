@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 
-    Integer countAllByGroup_CategoryAndRoleAndActiveTrue(Category category, ERole role);
+    List<User> findAllByGroup_CategoryAndRoleAndActiveTrue(Category category, ERole role);
 
     boolean existsByPhoneNumber(String phoneNumber);
 
@@ -33,5 +33,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByPhoneNumberAndIdNot(String phoneNumber, UUID id);
 
+    @Query("SELECT u FROM User u WHERE u.role = 'ROLE_STUDENT' AND u.active = true")
+    List<User> findActiveStudent();
+
+    List<User> findByRole(ERole role);
+
+ }
     List<User> findAllByGroup(Group group);
 }

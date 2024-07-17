@@ -59,6 +59,7 @@ public class GroupService {
             ResGroup resGroup=ResGroup.builder()
                     .name(group.getName())
                     .categoryName(group.getCategory().getName())
+                    .teacherName(group.getTeacher().getFirstname()+" "+group.getTeacher().getLastname())
                     .active(group.isActive())
                     .build();
             resGroups.add(resGroup);

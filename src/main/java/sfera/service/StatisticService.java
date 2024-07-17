@@ -39,24 +39,31 @@ public class StatisticService {
                 .build();
         return new ApiResponse("Success",true, HttpStatus.OK,statisticDto);
     }
+
     public ApiResponse getPercentageByCategory(){
+        int sum=0, count = 0;
         List<Category> categories = categoryRepository.findByActiveTrue();
-        Integer student = userRepository.countByRoleAndActiveTrue(ERole.ROLE_STUDENT);
         List<ResCategory> resCategoryList= new ArrayList<>();
         if (categories.isEmpty()){
             return new ApiResponse("Categories not found",false,HttpStatus.BAD_REQUEST,null);
         }
         for (Category category : categories){
-            Integer studentCount = userRepository.countAllByGroup_CategoryAndRoleAndActiveTrue(category, ERole.ROLE_STUDENT);
-            double percentage = (double) (studentCount * 100) / student;
+            double percentage=0;
+            List<User> students = userRepository.findAllByGroup_CategoryAndRoleAndActiveTrue(category, ERole.ROLE_STUDENT);
+            for (User student : students){
+                double percentageOfMonth = homeWorkService.getHomeworksByStudentPercentageOfMonth(student);
+                percentage+=percentageOfMonth;
+            }
             ResCategory resCategory=ResCategory.builder()
                     .categoryName(category.getName())
-                    .percentage(percentage)
+                    .percentage(percentage*100)
                     .build();
             resCategoryList.add(resCategory);
         }
         return new ApiResponse("Success",true,HttpStatus.OK,resCategoryList);
     }
+
+
 
 
 

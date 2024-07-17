@@ -14,13 +14,8 @@ import sfera.payload.req.ReqTeacher;
 import sfera.payload.res.ResGroupStudentCount;
 import sfera.payload.res.ResTeacher;
 import sfera.repository.GroupRepository;
-import sfera.entity.Group;
-import sfera.entity.User;
-import sfera.entity.enums.ERole;
 import sfera.exception.GenericException;
-import sfera.payload.ApiResponse;
 import sfera.payload.StudentDTO;
-import sfera.repository.GroupRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -54,7 +49,7 @@ public class UserService {
     }
 
     public ApiResponse getAllTeachers(){
-        List<User> users = userRepository.findUser();
+        List<User> users = userRepository.findByRole(ERole.ROLE_TEACHER);
         List<ResTeacher> resTeachers = new ArrayList<>();
         if (users.isEmpty()){
             return new ApiResponse("No users found",false, HttpStatus.BAD_REQUEST,null);
@@ -112,6 +107,7 @@ public class UserService {
         userRepository.save(user);
         return new ApiResponse("Successfully edited user",true, HttpStatus.OK,user);
     }
+
 
     public ApiResponse saveStudent(StudentDTO studentDTO) {
         boolean existsed = userRepository.existsByPhoneNumberAndIdNot(studentDTO.getPhoneNumber(),studentDTO.getId());
