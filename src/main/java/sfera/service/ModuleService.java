@@ -84,4 +84,10 @@ public class ModuleService {
         moduleRepository.delete(module);
         return new ApiResponse("Modul successfully deleted",HttpStatus.OK);
     }
+
+
+    public ApiResponse getModuleByCategoryId(Integer id){
+        List<Module> allByCategoryId = moduleRepository.findAllByCategory_Id(id);
+        return new ApiResponse("Success",HttpStatus.OK,allByCategoryId);
+    }
 }

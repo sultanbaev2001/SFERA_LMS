@@ -44,4 +44,10 @@ public class ModuleController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<ApiResponse> getModuleByCategory(@PathVariable Integer categoryId){
+        ApiResponse module = moduleService.getModuleByCategoryId(categoryId);
+        return ResponseEntity.status(module.getStatus()).body(module);
+    }
+
 }

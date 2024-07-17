@@ -12,4 +12,6 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
 
     @Query(value = "select id from module where category_id=:categoryId", nativeQuery = true)
     List<Integer> findAllIds(@Param("categoryId") Integer categoryId);
+
+    List<Module> findAllByCategory_Id(Integer categoryId);
 }

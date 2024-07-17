@@ -5,11 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sfera.entity.HomeWork;
 
+import sfera.entity.User;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
+    @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student IN :student AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate")
+    Integer findTotalScoreByStudentsAndPeriod(@Param("student") User student, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     @Query(value = "select sum(score) from home_work where student_id=:studentId", nativeQuery = true)
     int findAllScoreByStudent(@Param("studentId") UUID studentId);
 
@@ -32,11 +36,8 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     Integer getRatingStudent(@Param("groupId") Integer groupId, @Param("userId") UUID userId);
 
 
-    interface StudentData{
-        String getFirstName();
-    }
+    List<HomeWork> findAllByDueDateBetweenAndStudent(LocalDate startDate, LocalDate endDate,User user);
 
     @Query(value = "select * from home_work where task_id in : taskIds", nativeQuery = true)
     List<HomeWork> getAllHomework(@Param("taskIds") List<Integer> taskIds);
-
 }
