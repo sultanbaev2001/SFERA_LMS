@@ -1,7 +1,5 @@
 package sfera.mapper;
 
-
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import sfera.entity.Category;

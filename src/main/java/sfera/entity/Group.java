@@ -23,7 +23,12 @@ public class Group {
     private String name;
     @ManyToOne
     private Category category;
-    @OneToMany
+    @ManyToMany
+    @JoinTable(
+            name = "group_days",
+            joinColumns = { @JoinColumn(name = "group_id") },
+            inverseJoinColumns = { @JoinColumn(name = "days_id") }
+    )
     private List<DayOfWeek> days;
     @ManyToOne
     private User teacher;

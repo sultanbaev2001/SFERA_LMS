@@ -1,17 +1,20 @@
 package sfera.service;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sfera.entity.Category;
+import sfera.entity.HomeWork;
+import sfera.entity.Lesson;
 import sfera.entity.enums.ERole;
+import sfera.exception.GenericException;
 import sfera.payload.ApiResponse;
 import sfera.payload.StatisticDto;
 import sfera.payload.res.ResCategory;
-import sfera.repository.CategoryRepository;
-import sfera.repository.GroupRepository;
-import sfera.repository.UserRepository;
+import sfera.repository.*;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,8 @@ public class StatisticService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
+    private final LessonRepository lessonRepository;
+    private final HomeWorkRepository homeWorkRepository;
 
     public ApiResponse getAllCount(){
         Integer teacherCount = userRepository.countByRoleAndActiveTrue(ERole.ROLE_TEACHER);
@@ -54,20 +59,5 @@ public class StatisticService {
         }
         return new ApiResponse("Success",true,HttpStatus.OK,resCategoryList);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
