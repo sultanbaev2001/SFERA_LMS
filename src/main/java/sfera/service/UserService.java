@@ -12,6 +12,7 @@ import sfera.payload.ApiResponse;
 import sfera.payload.TeacherDto;
 import sfera.payload.req.ReqTeacher;
 import sfera.payload.res.ResGroupStudentCount;
+import sfera.payload.res.ResStudent;
 import sfera.payload.res.ResTeacher;
 import sfera.repository.GroupRepository;
 import sfera.entity.Group;
@@ -134,19 +135,19 @@ public class UserService {
 
     public ApiResponse getAllStudents() {
         List<User> users = userRepository.findAll();
-        List<StudentDTO> studentDTOList= new ArrayList<>();
+        List<ResStudent> resStudentList= new ArrayList<>();
         for (User user : users){
             if (user.getRole().equals(ERole.ROLE_STUDENT)){
-                StudentDTO studentDTO= StudentDTO.builder()
-                        .firstname(user.getFirstname())
-                        .lastname(user.getLastname())
+                ResStudent resStudent=ResStudent.builder()
+                        .fullName(user.getFirstname()+" "+user.getLastname())
                         .phoneNumber(user.getPhoneNumber())
-                        .groupId(user.getGroup().getId())
+                        .categoryName(user.getGroup().getCategory().getName())
+                        .groupName(user.getGroup().getName())
                         .build();
-                studentDTOList.add(studentDTO);
+                resStudentList.add(resStudent);
             }
         }
-        return new ApiResponse("All students successfully retrieved", HttpStatus.OK, studentDTOList);
+        return new ApiResponse("All students successfully retrieved", HttpStatus.OK, resStudentList);
     }
 
 
