@@ -18,7 +18,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     int findAllScoreByStudent(@Param("studentId") UUID studentId);
 
     @Query(value = "select count(*) as count  from (select sum(score) from home_work h" +
-            " inner join users u on h.student_id = u.id where u.id=:groupId group by u) as subquery", nativeQuery = true)
+            " inner join users u on h.student_id = u.id where u.group_id=:groupId group by u) as subquery", nativeQuery = true)
     Integer getCountRatingStudents(@Param("groupId") Integer groupId);
 
     @Query(value = "WITH ranked_users AS (\n" +
@@ -34,7 +34,6 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "FROM ranked_users\n" +
             "WHERE id = :userId;" ,nativeQuery = true)
     Integer getRatingStudent(@Param("groupId") Integer groupId, @Param("userId") UUID userId);
-
 
     List<HomeWork> findAllByDueDateBetweenAndStudent(LocalDate startDate, LocalDate endDate,User user);
 

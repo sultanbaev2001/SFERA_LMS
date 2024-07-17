@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface LessonTrackingRepository extends JpaRepository<LessonTracking, Integer> {
 
-    @Query(value = "select count(id) from lesson_tracking where group_id=:groupId and available is true", nativeQuery = true)
+    @Query(value = "select count(id) from lesson_tracking where group_id=:groupId and active is true", nativeQuery = true)
     int countAllAvailableLessons(@Param("groupId") Integer groupId);
 
 }
