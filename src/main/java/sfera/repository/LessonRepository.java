@@ -7,8 +7,10 @@ import sfera.entity.Task;
 
 import java.util.List;
 import java.util.Optional;
+import sfera.entity.Module;
 
 public interface LessonRepository extends JpaRepository<Lesson, Integer> {
+    boolean existsByNameAndModuleNot(String name, Module module);
 
     Optional<Lesson> findLessonByTaskList(List<Task> taskList);
 
