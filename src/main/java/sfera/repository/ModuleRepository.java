@@ -14,4 +14,6 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
     List<Integer> findAllIds(@Param("categoryId") Integer categoryId);
 
     List<Module> findAllByCategory_Id(Integer categoryId);
+
+    Module findByOrderName(String name);
 }
