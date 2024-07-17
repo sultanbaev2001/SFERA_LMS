@@ -49,7 +49,7 @@ public class UserService {
     }
 
     public ApiResponse getAllTeachers(){
-        List<User> users = userRepository.findUser();
+        List<User> users = userRepository.findByRole(ERole.ROLE_TEACHER);
         List<ResTeacher> resTeachers = new ArrayList<>();
         if (users.isEmpty()){
             return new ApiResponse("No users found",false, HttpStatus.BAD_REQUEST,null);
