@@ -23,7 +23,7 @@ public class AuthService {
 
     public ApiResponse login(AuthLogin authLoginDTO) {
         User user = userRepository.findByPhoneNumber(authLoginDTO.getPhoneNumber())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
         if(passwordEncoder.matches(authLoginDTO.getPassword(), user.getPassword())) {
             String token = jwtProvider.generateToken(authLoginDTO.getPhoneNumber());
             return new ApiResponse(token, true, HttpStatus.OK,null);
