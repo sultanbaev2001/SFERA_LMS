@@ -16,7 +16,7 @@ import sfera.payload.res.ResStudent;
 import sfera.payload.res.ResTeacher;
 import sfera.repository.GroupRepository;
 import sfera.exception.GenericException;
-import sfera.payload.StudentDTO;
+import sfera.payload.req.ReqStudent;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -110,11 +110,10 @@ public class UserService {
     }
 
 
-    public ApiResponse saveStudent(StudentDTO studentDTO) {
-        boolean existsed = userRepository.existsByPhoneNumberAndIdNot(studentDTO.getPhoneNumber(),studentDTO.getId());
+    public ApiResponse saveStudent(ReqStudent studentDTO) {
         Group group = groupRepository.findById(studentDTO.getGroupId())
                 .orElseThrow(() -> GenericException.builder().message("Group not found").statusCode(404).build());
-        if (!existsed){
+
             User user = User.builder()
                     .firstname(studentDTO.getFirstname())
                     .lastname(studentDTO.getLastname())
@@ -125,8 +124,6 @@ public class UserService {
                     .build();
             userRepository.save(user);
             return new ApiResponse("Student successfully saved", HttpStatus.OK);
-        }
-        return new ApiResponse("Student already exists", HttpStatus.CONFLICT);
     }
 
     public ApiResponse getAllStudents() {
@@ -139,6 +136,7 @@ public class UserService {
                         .phoneNumber(user.getPhoneNumber())
                         .categoryName(user.getGroup().getCategory().getName())
                         .groupName(user.getGroup().getName())
+                        .active(user.isActive())
                         .build();
                 resStudentList.add(resStudent);
             }
@@ -147,14 +145,11 @@ public class UserService {
     }
 
 
-    public ApiResponse updateStudent(StudentDTO studentDTO) {
-        boolean existsed = userRepository
-                .existsByPhoneNumberAndIdNot(studentDTO.getPhoneNumber(), studentDTO.getId());
-        User student = userRepository.findById(studentDTO.getId())
+    public ApiResponse updateStudent(UUID id,ReqStudent studentDTO) {
+        User student = userRepository.findById(id)
                 .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
         Group group = groupRepository.findById(studentDTO.getGroupId())
                 .orElseThrow(() -> GenericException.builder().message("Group not found").statusCode(404).build());
-        if (!existsed){
             student.setFirstname(studentDTO.getFirstname());
             student.setLastname(studentDTO.getLastname());
             student.setPhoneNumber(studentDTO.getPhoneNumber());
@@ -163,8 +158,6 @@ public class UserService {
             student.setRole(ERole.ROLE_STUDENT);
             userRepository.save(student);
             return new ApiResponse("Student successfully updated", HttpStatus.OK);
-        }
-        return new ApiResponse("Student already exists", HttpStatus.CONFLICT);
     }
 
 
@@ -173,5 +166,13 @@ public class UserService {
                 .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
         userRepository.delete(student);
         return new ApiResponse("Student successfully deleted", HttpStatus.OK);
+    }
+
+
+    public ApiResponse updateActiveInStudent(UUID id, boolean active){
+        User student = userRepository.findById(id)
+                .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
+        student.setActive(active);
+        return new ApiResponse("Student successfully updated", HttpStatus.OK);
     }
 }
