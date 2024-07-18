@@ -1,6 +1,7 @@
 package sfera.controller;
 
 import sfera.entity.VideoFile;
+import sfera.payload.ApiResponse;
 import sfera.service.VideoFileService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -26,12 +27,12 @@ public class VideoUploadController {
     }
 
     @PostMapping(value = "/upload",consumes = {"multipart/form-data"})
-    public ResponseEntity<String> uploadVideo(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResponse> uploadVideo(@RequestParam("file") MultipartFile file) {
         try {
-            VideoFile videoFile = videoFileService.saveFile(file);
-            return new ResponseEntity<>("File uploaded successfully: " + videoFile.getFileName(), HttpStatus.OK);
+            ApiResponse videoFile = videoFileService.saveFile(file);
+            return ResponseEntity.status(videoFile.getStatus()).body(videoFile);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error occurred while uploading file", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -50,6 +51,27 @@ public class VideoUploadController {
             }
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @PutMapping(value = "/update/{id}",consumes = {"multipart/form-data"})
+    public ResponseEntity<VideoFile> updateFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            VideoFile updatedFile = videoFileService.updateFile(id, file);
+            return ResponseEntity.ok(updatedFile);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteFile(@PathVariable Long id) {
+        try {
+            ApiResponse apiResponse = videoFileService.deleteFile(id);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).build();
         }
     }
 }

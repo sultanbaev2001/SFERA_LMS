@@ -6,10 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sfera.payload.ApiResponse;
 import sfera.payload.req.ReqTeacher;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import sfera.payload.ApiResponse;
-import sfera.payload.StudentDTO;
+import sfera.payload.req.ReqStudent;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sfera.service.UserService;
@@ -59,7 +56,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
     @PostMapping("/saveStudent")
-    public ResponseEntity<ApiResponse> saveStudent(StudentDTO studentDTO) {
+    public ResponseEntity<ApiResponse> saveStudent(@RequestBody ReqStudent studentDTO) {
         ApiResponse apiResponse = userService.saveStudent(studentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -72,9 +69,9 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
-    @PutMapping("/updateStudent")
-    public ResponseEntity<ApiResponse> updateStudent(StudentDTO studentDTO) {
-        ApiResponse apiResponse = userService.updateStudent(studentDTO);
+    @PutMapping("/updateStudent/{studentId}")
+    public ResponseEntity<ApiResponse> updateStudent(@PathVariable UUID studentId,@RequestBody ReqStudent studentDTO) {
+        ApiResponse apiResponse = userService.updateStudent(studentId,studentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
@@ -82,6 +79,14 @@ public class UserController {
     @DeleteMapping("/deleteStudent/{studentId}")
     public ResponseEntity<ApiResponse> deleteStudent(@PathVariable UUID studentId) {
         ApiResponse apiResponse = userService.deleteStudent(studentId);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+
+
+    @PutMapping("/updateActive/{studentId}")
+    public ResponseEntity<ApiResponse> updateActiveInStudent(@PathVariable UUID studentId, @RequestParam boolean active) {
+        ApiResponse apiResponse = userService.updateActiveInStudent(studentId, active);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 }

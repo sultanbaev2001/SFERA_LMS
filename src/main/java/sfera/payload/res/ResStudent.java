@@ -13,4 +13,5 @@ public class ResStudent {
     private String password;
     private String groupName;
     private String categoryName;
+    private boolean active;
 }
