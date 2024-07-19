@@ -20,4 +20,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     Optional<Lesson> findLessonByTaskList(List<Task> taskList);
 
     List<Lesson> findAllByModule_Category(Category category);
+
+
 }

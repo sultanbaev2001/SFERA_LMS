@@ -42,4 +42,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student.group = :group AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate")
     Integer findTotalScoreByGroupAndPeriod(@Param("group") Group group, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
+
+
+
 }
