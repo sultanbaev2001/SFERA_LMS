@@ -1,8 +1,6 @@
 package sfera.payload;
 
 import lombok.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -11,9 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TaskDto {
+public class LessonDTO {
     private Integer id;
     private String name;
-    private String description;
     private List<String> files;
+    private List<TaskDto> tasks;
 }

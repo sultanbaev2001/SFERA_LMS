@@ -21,4 +21,6 @@ public class Module {
     private String orderName;
     @ManyToOne
     private Category category;
+    @ManyToOne
+    private User teacher;
 }

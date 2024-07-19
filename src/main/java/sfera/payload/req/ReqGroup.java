@@ -19,6 +19,6 @@ public class ReqGroup {
     private Integer categoryId;
     private List<DayOfWeek> days;
     private UUID teacherId;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private String startTime;
+    private String endTime;
 }
