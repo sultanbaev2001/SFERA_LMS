@@ -9,6 +9,7 @@ import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.exception.UserNotFoundException;
 import sfera.payload.ApiResponse;
+import sfera.payload.StudentHomeworkDTO;
 import sfera.payload.TeacherDto;
 import sfera.payload.req.ReqTeacher;
 import sfera.payload.res.ResGroupStudentCount;
@@ -218,5 +219,12 @@ public class UserService {
             return new ApiResponse("Success", true, HttpStatus.OK, topStudens);
             }
         return new ApiResponse("Failed",  HttpStatus.BAD_REQUEST);
+    }
+
+
+
+    public ApiResponse getStudentsHomework(User user, Integer lessonId){
+        List<StudentHomeworkDTO> studentsHomeworks = homeWorkRepository.getStudentsHomeworks(user.getId(), lessonId);
+        return new ApiResponse("Success", HttpStatus.OK, studentsHomeworks);
     }
 }

@@ -8,6 +8,7 @@ import sfera.entity.HomeWork;
 
 import sfera.entity.Lesson;
 import sfera.entity.User;
+import sfera.payload.StudentHomeworkDTO;
 import sfera.payload.StudentRatingDTO;
 
 import java.time.LocalDate;
@@ -58,5 +59,16 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "ORDER BY score DESC", nativeQuery = true)
     List<StudentRatingDTO> getRatingStudents(@Param("groupId") Integer groupId);
 
+
+    @Query(value = "select s.firstname, g.name, m.order_name from users as s " +
+            "inner join groups as g on s.group_id=g.id " +
+            "inner join lesson_tracking as lt on g.id = lt.group_id " +
+            "inner join lesson as l on l.id = lt.lesson_id " +
+            "inner join module as m on l.module_id = m.id " +
+            "inner join lesson_task_list as ltl on l.id = ltl.lesson_id " +
+            "inner join task as t on ltl.task_list_id = t.id " +
+            "inner join home_work as hm on t.id = hm.task_id where hm.student_id=:studentId " +
+            "and hm.score is null and l.id=:lessonId" , nativeQuery = true)
+    List<StudentHomeworkDTO> getStudentsHomeworks(@Param("studentId") UUID studentId, @Param("lessonId") Integer lessonId);
 
 }
