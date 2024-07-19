@@ -14,8 +14,8 @@ import java.util.List;
 public class ReqLesson {
     private Integer id;
     private String name;
-    private String moduleName;
-    private String categoryName;
+    private Integer moduleId;
+    private Integer categoryId;
     private List<TaskDto> taskDtoList;
     private List<String> videoFileName;
 }

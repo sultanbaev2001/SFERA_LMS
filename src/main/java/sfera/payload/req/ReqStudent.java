@@ -1,4 +1,4 @@
-package sfera.payload;
+package sfera.payload.req;
 
 import lombok.*;
 
@@ -9,11 +9,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StudentDTO {
-    private UUID id;
+public class ReqStudent {
     private String firstname;
     private String lastname;
     private String phoneNumber;
     private String password;
+    private Integer categoryId;
     private Integer groupId;
 }

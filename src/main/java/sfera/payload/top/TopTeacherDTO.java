@@ -14,6 +14,5 @@ public class TopTeacherDTO {
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private String categoryName;
-    private Double rating;
+    private Integer score;
 }

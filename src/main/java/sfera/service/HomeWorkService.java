@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sfera.entity.HomeWork;
 import sfera.entity.Lesson;
+import sfera.entity.Group;
+import sfera.entity.HomeWork;
+import sfera.entity.Lesson;
 import sfera.entity.User;
 import sfera.exception.GenericException;
 import sfera.repository.HomeWorkRepository;
@@ -22,14 +25,25 @@ public class HomeWorkService {
     private final LessonRepository lessonRepository;
 
 
-//    Vaqt boyicha Studentga tegishli barcha homeworklarga berilgan ballni umumiy yig'indisini olib beradi
+    LocalDate startDate = LocalDate.now().withDayOfMonth(1); // Bu oyning birinchi kuni
+    LocalDate endDate = LocalDate.now(); // Hozirgi vaqt
+
+//    Shu oy bo'yicha Studentga tegishli barcha homeworklarga berilgan ballni umumiy yig'indisini olib beradi!
 
     public Integer getTotalScoreByStudentsAndCurrentMonth(User student) {
-        LocalDate startDate = LocalDate.now().withDayOfMonth(1); // Bu oyning birinchi kuni
-        LocalDate endDate = LocalDate.now(); // Hozirgi vaqt
         return homeWorkRepository.findTotalScoreByStudentsAndPeriod(student, startDate, endDate);
     }
 
+
+    //    Shu oy bo'yicha guruhdagi barcha student to'plagan umumiy ballar yig'indisini olib beradi!
+    public Integer getTotalScoreByGroupAndCurrentMonth(Group group) {
+
+        return homeWorkRepository.findTotalScoreByGroupAndPeriod(group, startDate, endDate);
+    }
+
+
+//    O'tgan oyning lessonlar boyicha student toplashi kerak bolgan umumiy ballar va homeworklar boyicha
+//    to'plagan ballarini nisbatini olib beradi -> allHomeworksScore/allLessonsScore
     public double getHomeworksByStudentPercentageOfMonth(User student) {
         int sum=0; Object checkLesson=null;
         LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1); // Oldingi oyning birinchi kuni
@@ -45,7 +59,6 @@ public class HomeWorkService {
             }
         }
         return (double) score/sum;
-
     }
 
 

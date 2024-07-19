@@ -25,6 +25,8 @@ public class HomeWork {
     private String solution;
     private Integer score;
     private LocalDate dueDate;
+    @OneToOne
+    private VideoFile videoFile;
 
 
 }
