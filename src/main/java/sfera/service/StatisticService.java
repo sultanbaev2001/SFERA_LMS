@@ -84,7 +84,6 @@ public class StatisticService {
 //    Student
     public ApiResponse getTopStudent(){
 
-        List<TopStudentDTO> studentList = new ArrayList<>();
         Map<TopStudentDTO, Integer> topStudentMap = new HashMap<>();
         List<User> activeStudents = userRepository.findByRole(ERole.ROLE_STUDENT);
         if (!activeStudents.isEmpty()){
@@ -147,7 +146,7 @@ public class StatisticService {
     public ApiResponse getTopTeacher(){
         Map<TopTeacherDTO, Integer> topTeacherMap = new HashMap<>();
         List<User> teachers = userRepository.findByRole(ERole.ROLE_TEACHER);
-        if (teachers.isEmpty()){
+        if (!teachers.isEmpty()){
             for (User teacher : teachers) {
                 if (teacher.isActive()){
                     int sumScore = 0;
