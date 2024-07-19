@@ -1,6 +1,7 @@
-package sfera.payload;
+package sfera.payload.res;
 
 import lombok.*;
+import sfera.payload.TaskDto;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LessonDTO {
+public class ResLessonDTO {
     private String name;
     private String moduleName;
     private String categoryName;
