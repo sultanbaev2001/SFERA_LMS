@@ -192,17 +192,16 @@ public class UserService {
     public ApiResponse getTopStudentByTeacher(User teacher){
 
         Map<ResStudent, Integer> topStudentMap = new HashMap<>();
-        for (Group group : groupRepository.findAllByTeacherId(teacher.getId())) {
-        List<User> activeStudents = userRepository.findAllByGroupId(group.getId());
+        List<User> activeStudents = userRepository.findAllByRoleAndGroup_Teacher(ERole.ROLE_STUDENT,teacher);
         if (!activeStudents.isEmpty()) {
             for (User user : activeStudents) {
                 if (user.isActive()) {
                     Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
-                    Integer ratingStudent = homeWorkRepository.getRatingStudent(group.getId(), user.getId());
+                    Integer ratingStudent = homeWorkRepository.getRatingStudent(user.getGroup().getId(), user.getId());
                     ResStudent resStudent = ResStudent.builder()
                             .fullName(user.getFirstname() + " " + user.getLastname())
                             .categoryName(user.getGroup().getCategory().getName())
-                            .groupName(group.getName())
+                            .groupName(user.getGroup().getName())
                             .ball(score)
                             .rate(ratingStudent)
                             .build();
@@ -218,8 +217,6 @@ public class UserService {
 
             return new ApiResponse("Success", true, HttpStatus.OK, topStudens);
             }
-        }
-
-        return new ApiResponse("Failed", false, HttpStatus.BAD_REQUEST, null);
+        return new ApiResponse("Failed",  HttpStatus.BAD_REQUEST);
     }
 }

@@ -33,4 +33,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
 
     List<User> findAllByGroupId(Integer groupId);
+    List<User> findAllByRoleAndGroup_Teacher(ERole role, User teacher);
 }
