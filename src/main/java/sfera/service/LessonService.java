@@ -9,7 +9,7 @@ import sfera.entity.Task;
 import sfera.entity.VideoFile;
 import sfera.exception.GenericException;
 import sfera.payload.ApiResponse;
-import sfera.payload.res.ResLessonDTO;
+import sfera.payload.ResLessonDTO;
 import sfera.payload.req.ReqLesson;
 import sfera.payload.TaskDto;
 import sfera.payload.res.ResLesson;
@@ -44,7 +44,7 @@ public class LessonService {
                         .orElseThrow(() -> GenericException.builder().message("Video file not found").statusCode(404).build());
                 List<Task> taskList = new ArrayList<>();
                 for (TaskDto taskDto : lessonDTO.getTaskDtoList()) {
-                    taskList.add(addTask(taskDto,file));
+                    taskList.add(addTask(taskDto,allByFileName));
                 }
                 addLesson(lessonDTO, module, taskList, allByFileName);
                 return new ApiResponse("Lesson successfully saved", HttpStatus.OK);
@@ -136,11 +136,11 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
-    public Task addTask(TaskDto taskDto,VideoFile videoFile){
+    public Task addTask(TaskDto taskDto,List<VideoFile> videoFile){
         Task task= Task.builder()
                 .name(taskDto.getName())
                 .description(taskDto.getDescription())
-                .videoFile(videoFile)
+                .files(videoFile)
                 .build();
         return taskRepository.save(task);
     }
