@@ -93,8 +93,7 @@ public class StatisticService {
                     Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
                     TopStudentDTO topStudentDTO = TopStudentDTO.builder()
                             .studentId(user.getId())
-                            .firstName(user.getFirstname())
-                            .lastName(user.getLastname())
+                            .fullName(user.getFirstname() + " " + user.getLastname())
                             .groupName(user.getGroup().getName())
                             .score(score)
                             .build();
@@ -147,7 +146,7 @@ public class StatisticService {
     public ApiResponse getTopTeacher(){
         Map<TopTeacherDTO, Integer> topTeacherMap = new HashMap<>();
         List<User> teachers = userRepository.findByRole(ERole.ROLE_TEACHER);
-        if (teachers.isEmpty()){
+        if (!teachers.isEmpty()){
             for (User teacher : teachers) {
                 if (teacher.isActive()){
                     int sumScore = 0;
@@ -159,8 +158,7 @@ public class StatisticService {
                     }
                     TopTeacherDTO topTeacherDTO = TopTeacherDTO.builder()
                             .teacherId(teacher.getId())
-                            .firstName(teacher.getFirstname())
-                            .lastName(teacher.getLastname())
+                            .fullName(teacher.getFirstname() + " " + teacher.getLastname())
                             .phoneNumber(teacher.getPhoneNumber())
                             .score(sumScore)
                             .build();
