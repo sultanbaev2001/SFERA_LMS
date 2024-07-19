@@ -10,9 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class LessonDTO {
+    private Integer id;
     private String name;
-    private String moduleName;
-    private String categoryName;
-    private List<TaskDto> taskDtoList;
-    private List<String> videoFileName;
+    private List<String> files;
+    private List<TaskDto> tasks;
 }

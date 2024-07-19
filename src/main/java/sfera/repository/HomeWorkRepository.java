@@ -5,7 +5,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sfera.entity.Group;
 import sfera.entity.HomeWork;
+
+import sfera.entity.Lesson;
 import sfera.entity.User;
+import sfera.payload.StudentRatingDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +18,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
     @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student IN :student AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate")
     Integer findTotalScoreByStudentsAndPeriod(@Param("student") User student, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
     @Query(value = "select sum(score) from home_work where student_id=:studentId", nativeQuery = true)
     int findAllScoreByStudent(@Param("studentId") UUID studentId);
 
@@ -43,6 +48,15 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     Integer findTotalScoreByGroupAndPeriod(@Param("group") Group group, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
 
+
+    @Query(value = "SELECT u.firstname AS firstname, u.lastname AS lastname, u.phone_number AS phoneNumber, " +
+            "SUM(h.score) AS score " +
+            "FROM home_work h " +
+            "INNER JOIN users u ON h.student_id = u.id " +
+            "WHERE u.group_id = :groupId " +
+            "GROUP BY u.firstname, u.lastname, u.phone_number " +
+            "ORDER BY score DESC", nativeQuery = true)
+    List<StudentRatingDTO> getRatingStudents(@Param("groupId") Integer groupId);
 
 
 }

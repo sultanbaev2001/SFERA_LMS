@@ -1,6 +1,5 @@
 package sfera.service;
 
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,7 +9,7 @@ import sfera.entity.Task;
 import sfera.entity.VideoFile;
 import sfera.exception.GenericException;
 import sfera.payload.ApiResponse;
-import sfera.payload.LessonDTO;
+import sfera.payload.res.ResLessonDTO;
 import sfera.payload.req.ReqLesson;
 import sfera.payload.TaskDto;
 import sfera.payload.res.ResLesson;
@@ -20,7 +19,6 @@ import sfera.repository.TaskRepository;
 import sfera.repository.VideoFileRepository;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +83,7 @@ public class LessonService {
         for (VideoFile videoFile : lesson.getVideoFile()) {
             videoFileName.add(videoFile.getFileName());
         }
-        LessonDTO reqLesson = LessonDTO.builder()
+        ResLessonDTO reqLesson = ResLessonDTO.builder()
                 .name(lesson.getName())
                 .moduleName(module.getOrderName())
                 .categoryName(lesson.getModule().getCategory().getName())
