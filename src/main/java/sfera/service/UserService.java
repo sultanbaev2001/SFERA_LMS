@@ -14,9 +14,11 @@ import sfera.payload.req.ReqTeacher;
 import sfera.payload.res.ResGroupStudentCount;
 import sfera.payload.res.ResStudent;
 import sfera.payload.res.ResTeacher;
+import sfera.payload.top.TopStudentDTO;
 import sfera.repository.GroupRepository;
 import sfera.exception.GenericException;
 import sfera.payload.req.ReqStudent;
+import sfera.repository.HomeWorkRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -31,6 +33,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final GroupRepository groupRepository;
+    private final HomeWorkRepository homeWorkRepository;
+    private final HomeWorkService homeWorkService;
 
     public ApiResponse saveTeacher(ReqTeacher reqTeacher){
         boolean exists = userRepository.existsByPhoneNumber(reqTeacher.getPhoneNumber());
@@ -126,19 +130,26 @@ public class UserService {
             return new ApiResponse("Student successfully saved", HttpStatus.OK);
     }
 
-    public ApiResponse getAllStudents() {
-        List<User> users = userRepository.findAll();
-        List<ResStudent> resStudentList= new ArrayList<>();
-        for (User user : users){
-            if (user.getRole().equals(ERole.ROLE_STUDENT)){
-                ResStudent resStudent=ResStudent.builder()
-                        .fullName(user.getFirstname()+" "+user.getLastname())
-                        .phoneNumber(user.getPhoneNumber())
-                        .categoryName(user.getGroup().getCategory().getName())
-                        .groupName(user.getGroup().getName())
-                        .active(user.isActive())
-                        .build();
-                resStudentList.add(resStudent);
+    public ApiResponse getAllStudents(User teacher) {
+        List<Group> allByTeacherId = groupRepository.findAllByTeacherId(teacher.getId());
+        List<ResStudent> resStudentList = new ArrayList<>();
+        for (Group group : allByTeacherId) {
+            List<User> users = userRepository.findAllByGroupId(group.getId());
+            for (User user : users) {
+                if (user.getRole().equals(ERole.ROLE_STUDENT)) {
+                    int allScoreByStudent = homeWorkRepository.findAllScoreByStudent(user.getId());
+                    Integer ratingStudent = homeWorkRepository.getRatingStudent(group.getId(), user.getId());
+                    ResStudent resStudent = ResStudent.builder()
+                            .fullName(user.getFirstname() + " " + user.getLastname())
+                            .phoneNumber(user.getPhoneNumber())
+                            .categoryName(user.getGroup().getCategory().getName())
+                            .groupName(group.getName())
+                            .ball(allScoreByStudent)
+                            .rate(ratingStudent)
+                            .active(user.isActive())
+                            .build();
+                    resStudentList.add(resStudent);
+                }
             }
         }
         return new ApiResponse("All students successfully retrieved", HttpStatus.OK, resStudentList);
@@ -174,5 +185,38 @@ public class UserService {
                 .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
         student.setActive(active);
         return new ApiResponse("Student successfully updated", HttpStatus.OK);
+    }
+
+
+//    Teacherni uzining studentlarini top reytingi
+    public ApiResponse getTopStudentByTeacher(User teacher){
+
+        Map<ResStudent, Integer> topStudentMap = new HashMap<>();
+        List<User> activeStudents = userRepository.findAllByRoleAndGroup_Teacher(ERole.ROLE_STUDENT,teacher);
+        if (!activeStudents.isEmpty()) {
+            for (User user : activeStudents) {
+                if (user.isActive()) {
+                    Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
+                    Integer ratingStudent = homeWorkRepository.getRatingStudent(user.getGroup().getId(), user.getId());
+                    ResStudent resStudent = ResStudent.builder()
+                            .fullName(user.getFirstname() + " " + user.getLastname())
+                            .categoryName(user.getGroup().getCategory().getName())
+                            .groupName(user.getGroup().getName())
+                            .ball(score)
+                            .rate(ratingStudent)
+                            .build();
+                    topStudentMap.put(resStudent, score);
+                }
+            }
+
+            List<ResStudent> topStudens = topStudentMap.entrySet().stream()
+                    .sorted(Map.Entry.<ResStudent, Integer>comparingByValue().reversed())
+                    .limit(5)
+                    .map(Map.Entry::getKey)
+                    .toList();
+
+            return new ApiResponse("Success", true, HttpStatus.OK, topStudens);
+            }
+        return new ApiResponse("Failed",  HttpStatus.BAD_REQUEST);
     }
 }

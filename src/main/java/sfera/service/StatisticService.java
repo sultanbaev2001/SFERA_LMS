@@ -84,7 +84,6 @@ public class StatisticService {
 //    Student
     public ApiResponse getTopStudent(){
 
-        List<TopStudentDTO> studentList = new ArrayList<>();
         Map<TopStudentDTO, Integer> topStudentMap = new HashMap<>();
         List<User> activeStudents = userRepository.findByRole(ERole.ROLE_STUDENT);
         if (!activeStudents.isEmpty()){
