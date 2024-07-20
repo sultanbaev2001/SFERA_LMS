@@ -71,6 +71,11 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "and hm.score is null and l.id=:lessonId" , nativeQuery = true)
     List<StudentHomeworkDTO> getStudentsHomeworks(@Param("studentId") UUID studentId, @Param("lessonId") Integer lessonId);
 
+    @Query(value = "SELECT task_id " +
+            "FROM home_work " +
+            "WHERE task_id IN :ids;",nativeQuery = true)
+    List<Integer> TaskIds(List<Integer> ids);
+
 
     @Query(value = "SELECT s.* FROM user AS s " +
             "INNER JOIN home_work AS hm ON hm.student_id = s.id " +
