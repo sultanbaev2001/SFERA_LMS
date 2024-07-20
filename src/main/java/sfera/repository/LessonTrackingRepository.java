@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sfera.entity.LessonTracking;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface LessonTrackingRepository extends JpaRepository<LessonTracking, Integer> {
@@ -12,4 +13,5 @@ public interface LessonTrackingRepository extends JpaRepository<LessonTracking, 
     @Query(value = "select count(id) from lesson_tracking where group_id=:groupId and active is true", nativeQuery = true)
     int countAllAvailableLessons(@Param("groupId") Integer groupId);
 
+    List<LessonTracking> findByGroupId(Integer groupId);
 }

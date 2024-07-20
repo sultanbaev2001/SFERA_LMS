@@ -37,8 +37,8 @@ public class StatisticController {
     }
 
 
-    @Operation(summary = "ADMIN  studentlar reytingini olish")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Admin top 5ta studentni korishi uchun")
     @GetMapping("top/student")
     public ResponseEntity<ApiResponse> getTopStudent(){
         ApiResponse apiResponse = statisticService.getTopStudent();
@@ -46,7 +46,7 @@ public class StatisticController {
     }
 
 
-    @Operation(summary = "ADMIN  top grouplarni olish")
+    @Operation(summary = "Admin top 5ta guruhni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("top/group")
     public ResponseEntity<ApiResponse> getTopGroup(){
@@ -55,7 +55,7 @@ public class StatisticController {
     }
 
 
-    @Operation(summary = "ADMIN top teacherlarni olish")
+    @Operation(summary = "Admin top 5ta teacherni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("top/teacher")
     public ResponseEntity<ApiResponse> getTopTeacher(){

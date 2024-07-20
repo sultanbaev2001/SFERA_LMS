@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import sfera.entity.Task;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 
