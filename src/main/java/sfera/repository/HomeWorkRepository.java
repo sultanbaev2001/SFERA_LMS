@@ -6,6 +6,11 @@ import org.springframework.data.repository.query.Param;
 import sfera.entity.Group;
 import sfera.entity.HomeWork;
 import sfera.entity.User;
+import sfera.payload.StudentRatingDTO;
+import sfera.payload.res.CategoryStatistics;
+import sfera.payload.res.GroupStatistics;
+import sfera.payload.teacher_homework.StudentHomeworkDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
