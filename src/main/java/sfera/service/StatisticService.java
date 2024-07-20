@@ -9,12 +9,14 @@ import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.payload.ApiResponse;
 import sfera.payload.StatisticDto;
+import sfera.payload.res.CategoryStatistics;
 import sfera.payload.res.ResCategory;
 import sfera.payload.top.TopGroupDTO;
 import sfera.payload.top.TopStudentDTO;
 import sfera.payload.top.TopTeacherDTO;
 import sfera.repository.CategoryRepository;
 import sfera.repository.GroupRepository;
+import sfera.repository.HomeWorkRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -27,6 +29,7 @@ public class StatisticService {
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
     private final HomeWorkService homeWorkService;
+    private final HomeWorkRepository homeWorkRepository;
 
     public ApiResponse getAllCount(){
         Integer teacherCount = userRepository.countByRoleAndActiveTrue(ERole.ROLE_TEACHER);
@@ -66,6 +69,12 @@ public class StatisticService {
     }
 
 
+    public ApiResponse getCategoryByYearlyStatistic(){
+        List<CategoryStatistics> categoryStatistics = homeWorkRepository.findCategoryStatistics();
+        return new ApiResponse("Success",true,HttpStatus.OK,categoryStatistics);
+    }
+
+
 
 
 
@@ -83,8 +92,6 @@ public class StatisticService {
 
 //    Student
     public ApiResponse getTopStudent(){
-
-        List<TopStudentDTO> studentList = new ArrayList<>();
         Map<TopStudentDTO, Integer> topStudentMap = new HashMap<>();
         List<User> activeStudents = userRepository.findByRole(ERole.ROLE_STUDENT);
         if (!activeStudents.isEmpty()){
@@ -147,7 +154,7 @@ public class StatisticService {
     public ApiResponse getTopTeacher(){
         Map<TopTeacherDTO, Integer> topTeacherMap = new HashMap<>();
         List<User> teachers = userRepository.findByRole(ERole.ROLE_TEACHER);
-        if (teachers.isEmpty()){
+        if (!teachers.isEmpty()){
             for (User teacher : teachers) {
                 if (teacher.isActive()){
                     int sumScore = 0;

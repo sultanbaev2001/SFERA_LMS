@@ -82,7 +82,7 @@ public class UserService {
                     .build();
             resGroupStudentCounts.add(resGroupStu);
         }
-        TeacherDto.builder()
+        TeacherDto teacherDto = TeacherDto.builder()
                 .firstName(user.getFirstname())
                 .lastName(user.getLastname())
                 .phoneNumber(user.getPhoneNumber())
@@ -90,7 +90,7 @@ public class UserService {
                 .resGroupStudentCount(resGroupStudentCounts)
                 .categoryName(categoryName)
                 .build();
-        return new ApiResponse("Success",true, HttpStatus.OK,resGroupStudentCounts);
+        return new ApiResponse("Success",true, HttpStatus.OK,teacherDto);
     }
 
     public  ApiResponse deActiveTeacher(UUID teacherId, Boolean active){

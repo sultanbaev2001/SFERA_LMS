@@ -32,5 +32,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     List<User> findByRole(ERole role);
 
 
-    List<User> findAllByGroupId(Integer groupId);
+    @Query(value = "SELECT u FROM User u WHERE u.active=true AND u.role='ROLE_STUDENT' AND " +
+            "LOWER(u.firstname) LIKE LOWER(CONCAT('%', :text, '%')) OR "+
+            "LOWER(u.lastname) LIKE LOWER(CONCAT('%', :text,'%'))" )
+    List<User> searchByText(@Param("text") String text);
+
+    List<User> findAllByGroupAndRoleAndActiveTrue(Group group, ERole role);
 }
