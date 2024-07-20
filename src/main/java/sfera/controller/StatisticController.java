@@ -1,6 +1,7 @@
 package sfera.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +35,7 @@ public class StatisticController {
     }
 
 
+    @Operation(summary = "Admin top 5ta studentni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("top/student")
     public ResponseEntity<ApiResponse> getTopStudent(){
@@ -42,6 +44,7 @@ public class StatisticController {
     }
 
 
+    @Operation(summary = "Admin top 5ta guruhni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("top/group")
     public ResponseEntity<ApiResponse> getTopGroup(){
@@ -50,6 +53,7 @@ public class StatisticController {
     }
 
 
+    @Operation(summary = "Admin top 5ta teacherni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("top/teacher")
     public ResponseEntity<ApiResponse> getTopTeacher(){
