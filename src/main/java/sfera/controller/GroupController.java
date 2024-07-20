@@ -1,5 +1,6 @@
 package sfera.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ public class GroupController {
     private final GroupService groupService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "ADMIN  Groupni qoshish")
     @PostMapping("save/")
     public ResponseEntity<ApiResponse> save(@RequestBody ReqGroup reqGroup){
         ApiResponse apiResponse = groupService.saveGroup(reqGroup);
@@ -23,18 +25,24 @@ public class GroupController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "ADMIN  Groupni hammasini get qilish")
     @GetMapping("list/")
     public ResponseEntity<ApiResponse> list(){
         ApiResponse apiResponse = groupService.getAllGroup();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "ADMIN  Groupni update qilish")
     @PutMapping("update/{groupId}")
     public ResponseEntity<ApiResponse> update(@PathVariable("groupId") int groupId, @RequestBody ReqGroup reqGroup){
         ApiResponse apiResponse = groupService.editGroup(groupId, reqGroup);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
-    
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "ADMIN  Groupni activeni uzgartirish ")
     @PutMapping("deActive/{groupId}")
     public ResponseEntity<ApiResponse> deActive(@PathVariable("groupId") int groupId,@RequestParam boolean active){
         ApiResponse apiResponse = groupService.deActivateGroup(groupId, active);
