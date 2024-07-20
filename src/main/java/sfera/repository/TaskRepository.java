@@ -15,5 +15,5 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
     List<Task> getAllLessonTasks(@Param("lessonId") Integer lessonId);
 
 
-    List<Task> getOpenTasks(@Param("userId")UUID userId);
+//    List<Task> getOpenTasks(@Param("userId")UUID userId);
 }
