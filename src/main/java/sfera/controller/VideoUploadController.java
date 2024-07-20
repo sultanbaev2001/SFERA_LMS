@@ -1,5 +1,6 @@
 package sfera.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import sfera.entity.VideoFile;
 import sfera.payload.ApiResponse;
 import sfera.service.VideoFileService;
@@ -26,6 +27,8 @@ public class VideoUploadController {
         this.videoFileService = videoFileService;
     }
 
+
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
     @PostMapping(value = "/upload",consumes = {"multipart/form-data"})
     public ResponseEntity<ApiResponse> uploadVideo(@RequestParam("file") MultipartFile file) {
         try {
@@ -36,6 +39,8 @@ public class VideoUploadController {
         }
     }
 
+
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
     @GetMapping("/files/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
@@ -55,6 +60,7 @@ public class VideoUploadController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
     @PutMapping(value = "/update/{id}",consumes = {"multipart/form-data"})
     public ResponseEntity<VideoFile> updateFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
@@ -65,6 +71,7 @@ public class VideoUploadController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteFile(@PathVariable Long id) {
         try {

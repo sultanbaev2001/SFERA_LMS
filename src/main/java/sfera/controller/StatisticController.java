@@ -20,6 +20,7 @@ public class StatisticController {
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "ADMIN category, modul, teacher va studentlarni sonini olish")
     @GetMapping("countBy/")
     public ResponseEntity<ApiResponse> getAllCountByStatistic(){
         ApiResponse apiResponse = statisticService.getAllCount();
@@ -27,6 +28,7 @@ public class StatisticController {
     }
 
 
+    @Operation(summary = "ADMIN bir oylik statistika",description = "ADMIN dashboard dumaloq statistika")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("percentage/")
     public ResponseEntity<ApiResponse> getPercentageStatistic(){
@@ -35,8 +37,8 @@ public class StatisticController {
     }
 
 
-    @Operation(summary = "Admin top 5ta studentni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Admin top 5ta studentni korishi uchun")
     @GetMapping("top/student")
     public ResponseEntity<ApiResponse> getTopStudent(){
         ApiResponse apiResponse = statisticService.getTopStudent();
