@@ -221,8 +221,6 @@ public class UserService {
         return new ApiResponse("Failed",  HttpStatus.BAD_REQUEST);
     }
 
-
-
     public ApiResponse getStudentsHomework(User user, Integer lessonId){
         List<StudentHomeworkDTO> studentsHomeworks = homeWorkRepository.getStudentsHomeworks(user.getId(), lessonId);
         return new ApiResponse("Success", HttpStatus.OK, studentsHomeworks);
