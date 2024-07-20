@@ -93,8 +93,7 @@ public class StatisticService {
                     Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
                     TopStudentDTO topStudentDTO = TopStudentDTO.builder()
                             .studentId(user.getId())
-                            .firstName(user.getFirstname())
-                            .lastName(user.getLastname())
+                            .fullName(user.getFirstname() + " " + user.getLastname())
                             .groupName(user.getGroup().getName())
                             .score(score)
                             .build();
@@ -159,8 +158,7 @@ public class StatisticService {
                     }
                     TopTeacherDTO topTeacherDTO = TopTeacherDTO.builder()
                             .teacherId(teacher.getId())
-                            .firstName(teacher.getFirstname())
-                            .lastName(teacher.getLastname())
+                            .fullName(teacher.getFirstname() + " " + teacher.getLastname())
                             .phoneNumber(teacher.getPhoneNumber())
                             .score(sumScore)
                             .build();

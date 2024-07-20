@@ -6,9 +6,8 @@ import org.springframework.data.repository.query.Param;
 import sfera.entity.Group;
 import sfera.entity.HomeWork;
 
-import sfera.entity.Lesson;
 import sfera.entity.User;
-import sfera.payload.StudentHomeworkDTO;
+import sfera.payload.teacher_homework.StudentHomeworkDTO;
 import sfera.payload.StudentRatingDTO;
 
 import java.time.LocalDate;
@@ -60,7 +59,8 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     List<StudentRatingDTO> getRatingStudents(@Param("groupId") Integer groupId);
 
 
-    @Query(value = "select s.firstname, g.name, m.order_name from users as s " +
+    @Query(value = "select concat(s.firstname, s,lastname) as fullName, t.name, g.name, " +
+            "m.order_name, hw.due_date, from users as s " +
             "inner join groups as g on s.group_id=g.id " +
             "inner join lesson_tracking as lt on g.id = lt.group_id " +
             "inner join lesson as l on l.id = lt.lesson_id " +
@@ -75,5 +75,19 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "FROM home_work " +
             "WHERE task_id IN :ids;",nativeQuery = true)
     List<Integer> TaskIds(List<Integer> ids);
+
+
+    @Query(value = "SELECT s.* FROM user AS s " +
+            "INNER JOIN home_work AS hm ON hm.student_id = s.id " +
+            "INNER JOIN groups AS g ON g.id = s.group_id " +
+            "WHERE hm.score IS NULL " +
+            "AND g.teacher_id = :teacherId", nativeQuery = true)
+    List<User> getStudentList(@Param("teacherId") UUID teacherId);
+
+
+
+
+    List<HomeWork> findAllByTaskId(Integer taskId);
+
 
 }
