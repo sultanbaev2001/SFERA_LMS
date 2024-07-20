@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GetStudentDto {
+public class StudentDto {
     private UUID studentId;
     private String fullName;
     private LocalDate sendTime;

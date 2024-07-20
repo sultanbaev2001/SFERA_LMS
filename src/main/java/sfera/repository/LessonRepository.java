@@ -3,12 +3,11 @@ package sfera.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import sfera.entity.Category;
-import sfera.entity.Lesson;
-import sfera.entity.Task;
+import sfera.entity.*;
 
 import java.util.List;
 import java.util.Optional;
+
 import sfera.entity.Module;
 import sfera.payload.LessonsDTO;
 
@@ -34,5 +33,15 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
             "right join lesson as l ON lvf.lesson_id = l.id " +
             "left join video_file as v ON lvf.video_file_id = v.id where l.id=:lessonId", nativeQuery = true)
     Lesson findStudentsLesson(@Param("lessonId") Integer lessonId);
+
+
+    @Query("SELECT DISTINCT l FROM Lesson l " +
+            "JOIN FETCH l.tasks t " +
+            "JOIN t.homeworks hw " +
+            "JOIN hw.student s " +
+            "JOIN s.group g " +
+            "WHERE g.teacher.id = :teacherId AND hw.score IS NULL")
+    List<Lesson> findAllLessonsByTeacherId(@Param("teacherId") UUID teacherId);
+
 
 }

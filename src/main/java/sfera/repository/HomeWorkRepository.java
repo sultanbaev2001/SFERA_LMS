@@ -59,4 +59,11 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     List<StudentRatingDTO> getRatingStudents(@Param("groupId") Integer groupId);
 
 
+
+
+
+
+    List<HomeWork> findAllByTaskId(Integer taskId);
+
+
 }
