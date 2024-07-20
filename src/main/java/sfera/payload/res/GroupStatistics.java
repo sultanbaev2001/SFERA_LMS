@@ -1,12 +1,12 @@
 package sfera.payload.res;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class GroupStatistics {
     private String groupName;
     private int month;
