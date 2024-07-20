@@ -58,51 +58,13 @@ public class StatisticService {
             }
             ResCategory resCategory=ResCategory.builder()
                     .categoryName(category.getName())
-                    .percentage(percentage*100)
+                    .percentage(percentage)
                     .build();
             resCategoryList.add(resCategory);
         }
         return new ApiResponse("Success",true,HttpStatus.OK,resCategoryList);
     }
 
-
-
-
-
-
-
-//    public ApiResponse getPercentageByCategoryYears() {
-//        List<Category> categories = categoryRepository.findByActiveTrue();
-//        List<ResCategory> resCategoryList = new ArrayList<>();
-//
-//        if (categories.isEmpty()) {
-//            return new ApiResponse("Categories not found", false, HttpStatus.BAD_REQUEST, null);
-//        }
-//
-//        for (Category category : categories) {
-//            double yearlyPercentage = 0;
-//            List<User> students = userRepository.findAllByGroup_CategoryAndRoleAndActiveTrue(category, ERole.ROLE_STUDENT);
-//            int studentCount = students.size();
-//
-//            for (User student : students) {
-//                    // Joriy oy uchun foizni olish
-//                double monthlyPercentage = homeWorkService.getHomeworksByStudentPercentageOfMonth(student);
-//                yearlyPercentage += monthlyPercentage;
-//            }
-//
-//            // O'rtacha yillik foizni hisoblash
-//            double averageYearlyPercentage = (studentCount > 0) ? (yearlyPercentage / studentCount) * 100 : 0;
-//
-//            ResCategory resCategory = ResCategory.builder()
-//                    .categoryName(category.getName())
-//                    .percentage(averageYearlyPercentage)
-//                    .build();
-//
-//            resCategoryList.add(resCategory);
-//        }
-//
-//        return new ApiResponse("Success", true, HttpStatus.OK, resCategoryList);
-//    }
 
 
 
