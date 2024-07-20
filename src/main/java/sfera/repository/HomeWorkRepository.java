@@ -48,21 +48,21 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student.group = :group AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate")
     Integer findTotalScoreByGroupAndPeriod(@Param("group") Group group, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    @Query(value = "SELECT new sfera.payload.res.CategoryStatistics(c.name, EXTRACT(MONTH FROM hw.dueDate), SUM(hw.score)) " +
+    @Query("SELECT new sfera.payload.res.CategoryStatistics(c.name, EXTRACT(MONTH FROM hw.dueDate) as month, SUM(hw.score) as totalScore) " +
             "FROM HomeWork hw " +
-            "JOIN users as u on hw.student_id=u.id " +
-            "JOIN groups as g on u.group_id=g.id " +
-            "JOIN category as c on c.id=g.category_id" +
-            "GROUP BY c.name, EXTRACT(MONTH FROM hw.dueDate) " +
-            "ORDER BY c.name, EXTRACT(MONTH FROM hw.dueDate)", nativeQuery = true)
+            "JOIN hw.student u " +
+            "JOIN u.group g " +
+            "JOIN g.category c " +
+            "GROUP BY c.name, month " +
+            "ORDER BY c.name, month")
     List<CategoryStatistics> findCategoryStatistics();
 
-    @Query(value="select new sfera.payload.res.GroupStatistics(g.name, EXTRACT(MONTH FROM hw.dueDate), SUM(hw.score))"+
-                "FROM HomeWork hw "+
-                "JOIN users as u on hw.student_id=u.id"  +
-                "JOIN groups as g on u.group_id=g.id "+
-                "GROUP BY c.name, EXTRACT(MONTH FROM hw.dueDate) " +
-                "ORDER BY c.name, EXTRACT(MONTH FROM hw.dueDate)", nativeQuery = true)
+    @Query("SELECT new sfera.payload.res.GroupStatistics(g.name, EXTRACT(MONTH FROM hw.dueDate) as month, SUM(hw.score) as totalScore) " +
+            "FROM HomeWork hw " +
+            "JOIN hw.student u " +
+            "JOIN u.group g " +
+            "GROUP BY g.name, month " +
+            "ORDER BY g.name, month")
     List<GroupStatistics> findGroupStatistics();
 
 
