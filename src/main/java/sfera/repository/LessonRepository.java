@@ -35,13 +35,14 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     Lesson findStudentsLesson(@Param("lessonId") Integer lessonId);
 
 
-    @Query("SELECT DISTINCT l FROM Lesson l " +
-            "JOIN FETCH l.tasks t " +
-            "JOIN t.homeworks hw " +
-            "JOIN hw.student s " +
-            "JOIN s.group g " +
-            "WHERE g.teacher.id = :teacherId AND hw.score IS NULL")
-    List<Lesson> findAllLessonsByTeacherId(@Param("teacherId") UUID teacherId);
+    @Query(value = "SELECT l.id FROM lesson l " +
+            "JOIN lesson_tracking lt ON l.id = lt.lesson_id " +
+            "JOIN groups g ON lt.group_id = g.id " +
+            "JOIN users s ON s.group_id = g.id " +
+            "WHERE s.id = :studentId", nativeQuery = true)
+    Integer findLessonByStudent(@Param("studentId") UUID studentId);
+
+
 
 
 }

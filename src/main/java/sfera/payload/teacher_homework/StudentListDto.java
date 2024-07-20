@@ -10,9 +10,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StudentDto {
+public class StudentListDto {
     private UUID studentId;
     private String fullName;
-    private LocalDate sendTime;
     private Integer lessonId;
 }

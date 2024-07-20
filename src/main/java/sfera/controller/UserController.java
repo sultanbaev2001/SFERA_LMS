@@ -130,4 +130,22 @@ public class UserController {
         ApiResponse topStudentByTeacher = userService.getTopStudentByTeacher(user);
         return ResponseEntity.status(topStudentByTeacher.getStatus()).body(topStudentByTeacher);
     }
+
+
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @Operation(summary = "TEACHER Homework student list")
+    @GetMapping("/homework/list")
+    public ResponseEntity<ApiResponse> getHomeworkList(@CurrentUser User user) {
+        ApiResponse apiResponse = userService.getStudentList(user);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @Operation(summary = "TEACHER Homework student")
+    @GetMapping("/homework")
+    public ResponseEntity<ApiResponse> getHomework(@RequestParam UUID studentId, @RequestParam Integer lessonId) {
+        ApiResponse apiResponse = userService.getStudentsHomework(studentId, lessonId);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 }
