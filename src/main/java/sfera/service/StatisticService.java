@@ -9,12 +9,14 @@ import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.payload.ApiResponse;
 import sfera.payload.StatisticDto;
+import sfera.payload.res.CategoryStatistics;
 import sfera.payload.res.ResCategory;
 import sfera.payload.top.TopGroupDTO;
 import sfera.payload.top.TopStudentDTO;
 import sfera.payload.top.TopTeacherDTO;
 import sfera.repository.CategoryRepository;
 import sfera.repository.GroupRepository;
+import sfera.repository.HomeWorkRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -27,6 +29,7 @@ public class StatisticService {
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
     private final HomeWorkService homeWorkService;
+    private final HomeWorkRepository homeWorkRepository;
 
     public ApiResponse getAllCount(){
         Integer teacherCount = userRepository.countByRoleAndActiveTrue(ERole.ROLE_TEACHER);
@@ -63,6 +66,12 @@ public class StatisticService {
             resCategoryList.add(resCategory);
         }
         return new ApiResponse("Success",true,HttpStatus.OK,resCategoryList);
+    }
+
+
+    public ApiResponse getCategoryByYearlyStatistic(){
+        List<CategoryStatistics> categoryStatistics = homeWorkRepository.findCategoryStatistics();
+        return new ApiResponse("Success",true,HttpStatus.OK,categoryStatistics);
     }
 
 

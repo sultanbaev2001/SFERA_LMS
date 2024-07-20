@@ -20,6 +20,9 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     int findCountLesson(List<Integer> moduleId);
     Optional<Lesson> findLessonByTaskList(List<Task> taskList);
 
+    Integer countByModule(Module module);
+
+    List<Lesson> findByModule(Module module);
     List<Lesson> findAllByModule_Category(Category category);
 
     @Query(value = "select m.order_name as moduleName, l.id as lessonId, l.name as lessonName, t.active as active " +

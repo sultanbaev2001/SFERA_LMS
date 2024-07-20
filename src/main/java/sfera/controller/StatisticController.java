@@ -36,6 +36,13 @@ public class StatisticController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("categoryByYearlyStatistics/")
+    public ResponseEntity<ApiResponse> getCategoryByYearlyStatistic(){
+        ApiResponse apiResponse = statisticService.getCategoryByYearlyStatistic();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Admin top 5ta studentni korishi uchun")
