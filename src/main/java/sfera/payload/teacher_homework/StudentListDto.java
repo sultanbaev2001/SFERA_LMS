@@ -1,7 +1,8 @@
-package sfera.payload.top;
+package sfera.payload.teacher_homework;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -9,9 +10,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TopStudentDTO {
+public class StudentListDto {
     private UUID studentId;
     private String fullName;
-    private String groupName;
-    private Integer score;
+    private Integer lessonId;
 }

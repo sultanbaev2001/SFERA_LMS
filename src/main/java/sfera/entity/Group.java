@@ -37,6 +37,6 @@ public class Group {
     private boolean active;
 
     private LocalDate startDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private String startTime;
+    private String endTime;
 }

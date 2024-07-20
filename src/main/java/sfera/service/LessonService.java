@@ -1,6 +1,5 @@
 package sfera.service;
 
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,6 +9,7 @@ import sfera.entity.Task;
 import sfera.entity.VideoFile;
 import sfera.exception.GenericException;
 import sfera.payload.ApiResponse;
+import sfera.payload.ResLessonDTO;
 import sfera.payload.req.ReqLesson;
 import sfera.payload.TaskDto;
 import sfera.payload.res.ResLesson;
@@ -22,7 +22,6 @@ import sfera.repository.TaskRepository;
 import sfera.repository.VideoFileRepository;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +37,17 @@ public class LessonService {
 
 
     public ApiResponse saveLesson(ReqLesson lessonDTO){
-        Module module = moduleRepository.findByOrderName(lessonDTO.getModuleName());
+        Module module = moduleRepository.findById(lessonDTO.getModuleId())
+                .orElseThrow(() -> GenericException.builder().message("Module not found").statusCode(404).build());
         boolean existsed = lessonRepository.existsByNameAndModuleNot(lessonDTO.getName(), module);
         if (!existsed) {
             for (String fileName : lessonDTO.getVideoFileName()) {
                 List<VideoFile> allByFileName = videoFileRepository.findAllByFileName(fileName);
-
+                VideoFile file = videoFileRepository.findByFileName(fileName)
+                        .orElseThrow(() -> GenericException.builder().message("Video file not found").statusCode(404).build());
                 List<Task> taskList = new ArrayList<>();
                 for (TaskDto taskDto : lessonDTO.getTaskDtoList()) {
-                    taskList.add(addTask(taskDto));
+                    taskList.add(addTask(taskDto,allByFileName));
                 }
                 addLesson(lessonDTO, module, taskList, allByFileName);
                 return new ApiResponse("Lesson successfully saved", HttpStatus.OK);
@@ -77,15 +78,17 @@ public class LessonService {
         List<TaskDto> taskDTOList = new ArrayList<>();
         Lesson lesson = lessonRepository.findById(id)
                 .orElseThrow(() -> GenericException.builder().message("Lesson not found").statusCode(404).build());
+        Module module = moduleRepository.findById(lesson.getModule().getId())
+                .orElseThrow(() -> GenericException.builder().message("Module not found").statusCode(404).build());
         for (Task task : lesson.getTaskList()) {
             taskDTOList.add(getTaskDto(task));
         }
         for (VideoFile videoFile : lesson.getVideoFile()) {
             videoFileName.add(videoFile.getFileName());
         }
-        ReqLesson reqLesson = ReqLesson.builder()
+        ResLessonDTO reqLesson = ResLessonDTO.builder()
                 .name(lesson.getName())
-                .moduleName(lesson.getModule().getOrderName())
+                .moduleName(module.getOrderName())
                 .categoryName(lesson.getModule().getCategory().getName())
                 .taskDtoList(taskDTOList)
                 .videoFileName(videoFileName)
@@ -96,7 +99,8 @@ public class LessonService {
 
     public ApiResponse updateLesson(ReqLesson reqLesson){
         List<Task> taskList=new ArrayList<>();
-        Module module = moduleRepository.findByOrderName(reqLesson.getModuleName());
+        Module module = moduleRepository.findById(reqLesson.getModuleId())
+                .orElseThrow(() -> GenericException.builder().message("Module not found").statusCode(404).build());
         Lesson lesson = lessonRepository.findById(reqLesson.getId())
                 .orElseThrow(() -> GenericException.builder().message("Lesson not found").statusCode(404).build());
         boolean existsed = lessonRepository.existsByNameAndModuleNot(reqLesson.getName(), lesson.getModule());
@@ -174,10 +178,11 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
-    private Task addTask(TaskDto taskDto){
+    public Task addTask(TaskDto taskDto,List<VideoFile> videoFile){
         Task task= Task.builder()
                 .name(taskDto.getName())
                 .description(taskDto.getDescription())
+                .files(videoFile)
                 .build();
         return taskRepository.save(task);
     }

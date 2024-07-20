@@ -61,7 +61,7 @@ public class StatisticService {
             }
             ResCategory resCategory=ResCategory.builder()
                     .categoryName(category.getName())
-                    .percentage(percentage*100)
+                    .percentage(percentage)
                     .build();
             resCategoryList.add(resCategory);
         }
@@ -88,10 +88,12 @@ public class StatisticService {
 
 
 
+
 //    TOP Teacher, student and group service
 
 //    Student
     public ApiResponse getTopStudent(){
+
         Map<TopStudentDTO, Integer> topStudentMap = new HashMap<>();
         List<User> activeStudents = userRepository.findByRole(ERole.ROLE_STUDENT);
         if (!activeStudents.isEmpty()){
@@ -100,8 +102,7 @@ public class StatisticService {
                     Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
                     TopStudentDTO topStudentDTO = TopStudentDTO.builder()
                             .studentId(user.getId())
-                            .firstName(user.getFirstname())
-                            .lastName(user.getLastname())
+                            .fullName(user.getFirstname() + " " + user.getLastname())
                             .groupName(user.getGroup().getName())
                             .score(score)
                             .build();
@@ -166,8 +167,7 @@ public class StatisticService {
                     }
                     TopTeacherDTO topTeacherDTO = TopTeacherDTO.builder()
                             .teacherId(teacher.getId())
-                            .firstName(teacher.getFirstname())
-                            .lastName(teacher.getLastname())
+                            .fullName(teacher.getFirstname() + " " + teacher.getLastname())
                             .phoneNumber(teacher.getPhoneNumber())
                             .score(sumScore)
                             .build();

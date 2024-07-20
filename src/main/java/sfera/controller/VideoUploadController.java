@@ -1,6 +1,8 @@
 package sfera.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import sfera.entity.VideoFile;
+import sfera.payload.ApiResponse;
 import sfera.service.VideoFileService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -25,16 +27,20 @@ public class VideoUploadController {
         this.videoFileService = videoFileService;
     }
 
+
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
     @PostMapping(value = "/upload",consumes = {"multipart/form-data"})
-    public ResponseEntity<String> uploadVideo(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResponse> uploadVideo(@RequestParam("file") MultipartFile file) {
         try {
-            VideoFile videoFile = videoFileService.saveFile(file);
-            return new ResponseEntity<>("File uploaded successfully: " + videoFile.getFileName(), HttpStatus.OK);
+            ApiResponse videoFile = videoFileService.saveFile(file);
+            return ResponseEntity.status(videoFile.getStatus()).body(videoFile);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error occurred while uploading file", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
     @GetMapping("/files/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
@@ -50,6 +56,29 @@ public class VideoUploadController {
             }
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
+    @PutMapping(value = "/update/{id}",consumes = {"multipart/form-data"})
+    public ResponseEntity<VideoFile> updateFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            VideoFile updatedFile = videoFileService.updateFile(id, file);
+            return ResponseEntity.ok(updatedFile);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_STUDENT') or hasRole('ROLE_TEACHER')")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteFile(@PathVariable Long id) {
+        try {
+            ApiResponse apiResponse = videoFileService.deleteFile(id);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).build();
         }
     }
 }

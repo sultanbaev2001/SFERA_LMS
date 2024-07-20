@@ -38,4 +38,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     List<User> searchByText(@Param("text") String text);
 
     List<User> findAllByGroupAndRoleAndActiveTrue(Group group, ERole role);
+    List<User> findAllByGroupId(Integer groupId);
+    List<User> findAllByRoleAndGroup_Teacher(ERole role, User teacher);
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sfera.entity.Category;
+import sfera.entity.DayOfWeek;
 import sfera.entity.Group;
 import sfera.entity.User;
 import sfera.exception.GenericException;
@@ -12,6 +13,7 @@ import sfera.payload.ApiResponse;
 import sfera.payload.req.ReqGroup;
 import sfera.payload.res.ResGroup;
 import sfera.repository.CategoryRepository;
+import sfera.repository.DayOfWeekRepository;
 import sfera.repository.GroupRepository;
 import sfera.repository.UserRepository;
 
@@ -26,8 +28,10 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final DayOfWeekRepository dayOfWeekRepository;
 
     public ApiResponse saveGroup(ReqGroup reqGroup){
+        List<DayOfWeek> dayOfWeekList=new ArrayList<>();
         boolean exists = groupRepository.existsByName(reqGroup.getName());
         Category category = categoryRepository.findById(reqGroup.getCategoryId()).orElseThrow(() -> GenericException.builder()
                 .message("Category not found").statusCode(404).build());
@@ -35,10 +39,15 @@ public class GroupService {
         if(exists){
             return new ApiResponse("Group name already exits",false, HttpStatus.BAD_REQUEST,null);
         }
+        for (Integer id : reqGroup.getDaysId()) {
+            DayOfWeek dayOfWeek = dayOfWeekRepository.findById(id)
+                    .orElseThrow(() -> GenericException.builder().message("Days not found").statusCode(404).build());
+            dayOfWeekList.add(dayOfWeek);
+        }
         Group group=Group.builder()
                 .name(reqGroup.getName())
                 .category(category)
-                .days(reqGroup.getDays())
+                .days(dayOfWeekList)
                 .teacher(teacher)
                 .active(true)
                 .startDate(LocalDate.now())
@@ -68,6 +77,7 @@ public class GroupService {
     }
 
     public ApiResponse editGroup(int groupId,ReqGroup reqGroup){
+        List<DayOfWeek> dayOfWeekList=new ArrayList<>();
         boolean exists = groupRepository.existsByNameAndIdNot(reqGroup.getName(),groupId);
         Category category = categoryRepository.findById(reqGroup.getCategoryId()).orElseThrow(() -> GenericException.builder()
                 .message("Category not found").statusCode(404).build());
@@ -77,9 +87,14 @@ public class GroupService {
         if(exists){
             return new ApiResponse("Group name already exits",false, HttpStatus.BAD_REQUEST,null);
         }
+        for (Integer id : reqGroup.getDaysId()) {
+            DayOfWeek dayOfWeek = dayOfWeekRepository.findById(id)
+                    .orElseThrow(() -> GenericException.builder().message("Days not found").statusCode(404).build());
+            dayOfWeekList.add(dayOfWeek);
+        }
         group.setName(reqGroup.getName());
         group.setCategory(category);
-        group.setDays(reqGroup.getDays());
+        group.setDays(dayOfWeekList);
         group.setStartDate(LocalDate.now());
         group.setStartTime(reqGroup.getStartTime());
         group.setEndTime(reqGroup.getEndTime());
