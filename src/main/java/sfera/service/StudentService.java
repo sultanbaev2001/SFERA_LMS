@@ -26,7 +26,7 @@ public class StudentService {
     private final LessonTrackingRepository lessonTrackingRepository;
     private final CategoryRepository categoryRepository;
     private final TaskRepository taskRepository;
-    private final VideoFileRepository videoFileRepository;
+    private final FileRepository fileRepository;
 
     public ApiResponse getCountAllAndAvailableLessonsAndScoreAndRate(UUID id){
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
@@ -76,7 +76,7 @@ public class StudentService {
         LessonDTO lessonDTO = LessonDTO.builder()
                 .id(studentsLesson.getId())
                 .name(studentsLesson.getName())
-                .files(studentsLesson.getVideoFile().stream().map(VideoFile::getFileName).toList())
+                .fileIds(studentsLesson.getFiles().stream().map(File::getId).toList())
                 .tasks(taskDtoList)
                 .build();
         return new ApiResponse("Success", HttpStatus.OK, lessonDTO);
@@ -99,7 +99,7 @@ public class StudentService {
                     .dueDate(LocalDate.now())
                     .task(taskRepository.findById(h.getTaskId())
                             .orElseThrow(() -> GenericException.builder().message("Task not found").statusCode(404).build()))
-                    .videoFile(videoFileRepository.findByFileName(h.getFileName()).orElse(null))
+                    .file(fileRepository.findById(h.getFileId()).orElse(null))
                     .build();
             homeWorkRepository.save(homeWork);
         }
@@ -111,7 +111,7 @@ public class StudentService {
                 .id(t.getId())
                 .name(t.getName())
                 .description(t.getDescription())
-                .files(t.getFiles().stream().map(VideoFile::getFileName).toList())
+                .fileId(t.getFile().getId())
                 .build();
     }
 }

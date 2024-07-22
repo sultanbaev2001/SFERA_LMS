@@ -26,7 +26,7 @@ public class HomeWork {
     private Integer score;
     private LocalDate dueDate;
     @OneToOne
-    private VideoFile videoFile;
+    private File file;
 
 
 }

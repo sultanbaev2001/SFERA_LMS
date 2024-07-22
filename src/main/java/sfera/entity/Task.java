@@ -19,6 +19,6 @@ public class Task {
     private Integer id;
     private String name;
     private String description;
-    @OneToMany
-    private List<VideoFile> files;
+    @OneToOne
+    private File file;
 }

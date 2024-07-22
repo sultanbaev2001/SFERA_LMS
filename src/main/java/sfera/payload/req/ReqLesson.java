@@ -17,5 +17,5 @@ public class ReqLesson {
     private Integer moduleId;
     private Integer categoryId;
     private List<TaskDto> taskDtoList;
-    private List<String> videoFileName;
+    private List<Long> fileIds;
 }
