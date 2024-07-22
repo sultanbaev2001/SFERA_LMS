@@ -79,6 +79,15 @@ public class StudentService {
         return new ApiResponse("Success", HttpStatus.OK, lessonDTO);
     }
 
+    public ApiResponse getStudentTasks(User user){
+        List<Task> tasks = taskRepository.studentTasks(user.getGroup().getId(), user.getId());
+        List<TaskDto> taskDtoList = new ArrayList<>();
+        for(Task t: tasks){
+            TaskDto taskDto = convertTaskToDto(t);
+            taskDtoList.add(taskDto);
+        }
+        return new ApiResponse("Success", HttpStatus.OK, taskDtoList);
+    }
 
     public TaskDto convertTaskToDto(Task t){
         return TaskDto.builder()

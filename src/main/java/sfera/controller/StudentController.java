@@ -13,7 +13,7 @@ import sfera.entity.User;
 import sfera.payload.ApiResponse;
 import sfera.security.CurrentUser;
 import sfera.service.StudentService;
-import sfera.service.UserService;
+
 
 @Tag(name = "Student Controller")
 @RestController
@@ -22,7 +22,6 @@ import sfera.service.UserService;
 public class StudentController {
 
     private final StudentService studentService;
-    private final UserService userService;
 
     @Operation(summary = "Studenti infosi")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -54,5 +53,13 @@ public class StudentController {
     public ResponseEntity<ApiResponse> getLesson(@PathVariable Integer id){
         ApiResponse api = studentService.getStudentLesson(id);
         return ResponseEntity.status(api.getStatus()).body(api);
+    }
+
+    @Operation(summary = "Student tasklarini korish")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @GetMapping("/tasks")
+    public ResponseEntity<ApiResponse> getStudentHomeworks(@CurrentUser User user){
+        ApiResponse apiResponse = studentService.getStudentTasks(user);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 }

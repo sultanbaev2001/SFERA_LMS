@@ -23,11 +23,11 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
 
     List<Lesson> findAllByModule_Category(Category category);
 
-    @Query(value = "select m.order_name as moduleName, l.id as lessonId, l.name as lessonName, t.active as active " +
-            "from users as u inner join groups as g on u.group_id = g.id " +
+    @Query(value = "select m.order_name as moduleName, l.id as lessonId, l.name as lessonName, " +
+            "coalesce(t.active, false) as active from users as u inner join groups as g on u.group_id = g.id " +
             "inner join category as c on g.category_id=c.id inner join module as m on c.id = m.category_id " +
             "inner join lesson as l on m.id = l.module_id left join lesson_tracking as t on l.id = t.lesson_id " +
-            "where u.id=:userId", nativeQuery = true)
+            "where u.id=:userId order by l.id", nativeQuery = true)
     List<LessonsDTO> findAllStudentsLessons(@Param("userId") UUID userId);
 
     @Query(value = "select l.*, v.file_name from  lesson_video_file as lvf " +
