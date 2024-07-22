@@ -12,6 +12,6 @@ import java.util.List;
 public class LessonDTO {
     private Integer id;
     private String name;
-    private List<String> files;
+    private List<Long> fileIds;
     private List<TaskDto> tasks;
 }

@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ReqHomeWork {
-    private String fileName;
+    private Long fileId;
     private Integer taskId;
 
 }
