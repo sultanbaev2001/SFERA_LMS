@@ -65,6 +65,14 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "ORDER BY g.name, month")
     List<GroupStatistics> findGroupStatistics();
 
+    @Query("SELECT new sfera.payload.res.GroupStatistics(g.name, EXTRACT(MONTH FROM hw.dueDate) as month, SUM(hw.score) as totalScore) " +
+            "FROM HomeWork hw " +
+            "JOIN hw.student u " +
+            "JOIN u.group g WHERE g.teacher.id=:teacherId " +
+            "GROUP BY g.name, month " +
+            "ORDER BY g.name, month")
+    List<GroupStatistics> findGroupStatisticsByTeacher(@Param("teacherId") UUID teacherId);
+
 
 
     @Query(value = "SELECT u.firstname AS firstname, u.lastname AS lastname, u.phone_number AS phoneNumber, " +

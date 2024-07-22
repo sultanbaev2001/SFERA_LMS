@@ -63,6 +63,7 @@ public class LessonController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    @Operation(summary = "Admin lessonlarni royxatini olish uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/moduleByLessonCount/")
     public ResponseEntity<ApiResponse> getModuleByLessonCount(){
@@ -70,6 +71,7 @@ public class LessonController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    @Operation(summary = "Admin module boyicha lessonlarni korish uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getModuleByLessons/{moduleId}")
     public ResponseEntity<ApiResponse> getModuleByLessons(@PathVariable Integer moduleId ) {

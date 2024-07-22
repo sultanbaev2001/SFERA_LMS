@@ -67,6 +67,12 @@ public class RateService {
         return new ApiResponse("Success", HttpStatus.OK, groupStatistics);
     }
 
+    public ApiResponse getStatisticForTeacher(User teacher){
+        List<GroupStatistics> groupStatisticsByTeacher = homeWorkRepository.findGroupStatisticsByTeacher(teacher.getId());
+        return new ApiResponse("Success", HttpStatus.OK, groupStatisticsByTeacher);
+    }
+
+
 
 
 
