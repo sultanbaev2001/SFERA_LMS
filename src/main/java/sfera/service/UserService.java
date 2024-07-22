@@ -54,7 +54,7 @@ public class UserService {
                 .active(true)
                 .build();
         userRepository.save(user);
-        return new ApiResponse("Successfully saved user",true, HttpStatus.OK,null);
+        return new ApiResponse("Successfully saved teacher",true, HttpStatus.OK,null);
     }
 
     public ApiResponse getAllTeachers(){
