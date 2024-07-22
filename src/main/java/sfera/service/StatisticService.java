@@ -46,7 +46,6 @@ public class StatisticService {
     }
 
     public ApiResponse getPercentageByCategory(){
-        int sum=0, count = 0;
         List<Category> categories = categoryRepository.findByActiveTrue();
         List<ResCategory> resCategoryList= new ArrayList<>();
         if (categories.isEmpty()){
