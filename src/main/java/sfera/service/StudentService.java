@@ -7,8 +7,10 @@ import sfera.entity.*;
 import sfera.exception.GenericException;
 import sfera.exception.UserNotFoundException;
 import sfera.payload.*;
+import sfera.payload.req.ReqHomeWork;
 import sfera.repository.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +26,7 @@ public class StudentService {
     private final LessonTrackingRepository lessonTrackingRepository;
     private final CategoryRepository categoryRepository;
     private final TaskRepository taskRepository;
+    private final VideoFileRepository videoFileRepository;
 
     public ApiResponse getCountAllAndAvailableLessonsAndScoreAndRate(UUID id){
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
@@ -87,6 +90,20 @@ public class StudentService {
             taskDtoList.add(taskDto);
         }
         return new ApiResponse("Success", HttpStatus.OK, taskDtoList);
+    }
+
+    public ApiResponse addStudentHomeWork(List<ReqHomeWork> list, User user){
+        for(ReqHomeWork h: list){
+            HomeWork homeWork = HomeWork.builder()
+                    .student(user)
+                    .dueDate(LocalDate.now())
+                    .task(taskRepository.findById(h.getTaskId())
+                            .orElseThrow(() -> GenericException.builder().message("Task not found").statusCode(404).build()))
+                    .videoFile(videoFileRepository.findByFileName(h.getFileName()).orElse(null))
+                    .build();
+            homeWorkRepository.save(homeWork);
+        }
+        return new ApiResponse("Success", HttpStatus.OK);
     }
 
     public TaskDto convertTaskToDto(Task t){

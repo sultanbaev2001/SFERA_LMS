@@ -5,14 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sfera.entity.User;
 import sfera.payload.ApiResponse;
+import sfera.payload.req.ReqHomeWork;
 import sfera.security.CurrentUser;
 import sfera.service.StudentService;
+
+import java.util.List;
 
 
 @Tag(name = "Student Controller")
@@ -60,6 +60,15 @@ public class StudentController {
     @GetMapping("/tasks")
     public ResponseEntity<ApiResponse> getStudentHomeworks(@CurrentUser User user){
         ApiResponse apiResponse = studentService.getStudentTasks(user);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @Operation(summary = "Student homeworkni jonatish")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PostMapping("/homework")
+    public ResponseEntity<ApiResponse> addStudentHomeWork(@RequestBody List<ReqHomeWork> homeWorks,
+                                                          @CurrentUser User user){
+        ApiResponse apiResponse = studentService.addStudentHomeWork(homeWorks, user);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 }

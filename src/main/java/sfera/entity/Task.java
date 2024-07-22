@@ -20,5 +20,5 @@ public class Task {
     private String name;
     private String description;
     @OneToMany
-    List<VideoFile> files;
+    private List<VideoFile> files;
 }
