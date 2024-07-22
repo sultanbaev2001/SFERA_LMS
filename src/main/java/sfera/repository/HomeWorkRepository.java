@@ -5,10 +5,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sfera.entity.Group;
 import sfera.entity.HomeWork;
-
 import sfera.entity.User;
-import sfera.payload.StudentHomeworkDTO;
 import sfera.payload.StudentRatingDTO;
+import sfera.payload.res.CategoryStatistics;
+import sfera.payload.res.GroupStatistics;
+import sfera.payload.teacher_homework.StudentHomeworkDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,6 +48,23 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student.group = :group AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate")
     Integer findTotalScoreByGroupAndPeriod(@Param("group") Group group, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
+    @Query("SELECT new sfera.payload.res.CategoryStatistics(c.name, EXTRACT(MONTH FROM hw.dueDate) as month, SUM(hw.score) as totalScore) " +
+            "FROM HomeWork hw " +
+            "JOIN hw.student u " +
+            "JOIN u.group g " +
+            "JOIN g.category c " +
+            "GROUP BY c.name, month " +
+            "ORDER BY c.name, month")
+    List<CategoryStatistics> findCategoryStatistics();
+
+    @Query("SELECT new sfera.payload.res.GroupStatistics(g.name, EXTRACT(MONTH FROM hw.dueDate) as month, SUM(hw.score) as totalScore) " +
+            "FROM HomeWork hw " +
+            "JOIN hw.student u " +
+            "JOIN u.group g " +
+            "GROUP BY g.name, month " +
+            "ORDER BY g.name, month")
+    List<GroupStatistics> findGroupStatistics();
+
 
 
     @Query(value = "SELECT u.firstname AS firstname, u.lastname AS lastname, u.phone_number AS phoneNumber, " +
@@ -59,7 +77,8 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     List<StudentRatingDTO> getRatingStudents(@Param("groupId") Integer groupId);
 
 
-    @Query(value = "select s.firstname, g.name, m.order_name from users as s " +
+    @Query(value = "select concat(s.firstname, s,lastname) as fullName, t.name, g.name, " +
+            "m.order_name, hw.due_date, from users as s " +
             "inner join groups as g on s.group_id=g.id " +
             "inner join lesson_tracking as lt on g.id = lt.group_id " +
             "inner join lesson as l on l.id = lt.lesson_id " +
@@ -70,10 +89,22 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "and hm.score is null and l.id=:lessonId" , nativeQuery = true)
     List<StudentHomeworkDTO> getStudentsHomeworks(@Param("studentId") UUID studentId, @Param("lessonId") Integer lessonId);
 
-
     @Query(value = "SELECT task_id " +
             "FROM home_work " +
             "WHERE task_id IN :ids;",nativeQuery = true)
     List<Integer> getTaskIds(List<Integer> ids);
+
+
+    @Query(value = "SELECT s.* FROM user AS s " +
+            "INNER JOIN home_work AS hm ON hm.student_id = s.id " +
+            "INNER JOIN groups AS g ON g.id = s.group_id " +
+            "WHERE hm.score IS NULL " +
+            "AND g.teacher_id = :teacherId", nativeQuery = true)
+    List<User> getStudentList(@Param("teacherId") UUID teacherId);
+
+
+    @Query(value = "UPDATE home_work hw SET score = :inScore WHERE hw.student_id = :studentId AND hw.id = :homeworkId", nativeQuery = true)
+    boolean updateHomeWorkByScore(@Param("studentId") UUID studentId, @Param("homeworkId") Integer homeworkId, @Param("inScore") Integer inScore);
+
 
 }

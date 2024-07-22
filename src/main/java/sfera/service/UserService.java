@@ -5,21 +5,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sfera.entity.Group;
+import sfera.entity.Lesson;
 import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.exception.UserNotFoundException;
 import sfera.payload.ApiResponse;
-import sfera.payload.StudentHomeworkDTO;
+import sfera.payload.teacher_homework.StudentHomeworkDTO;
 import sfera.payload.TeacherDto;
 import sfera.payload.req.ReqTeacher;
 import sfera.payload.res.ResGroupStudentCount;
 import sfera.payload.res.ResStudent;
 import sfera.payload.res.ResTeacher;
-import sfera.payload.top.TopStudentDTO;
+import sfera.payload.teacher_homework.StudentListDto;
 import sfera.repository.GroupRepository;
 import sfera.exception.GenericException;
 import sfera.payload.req.ReqStudent;
 import sfera.repository.HomeWorkRepository;
+import sfera.repository.LessonRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -36,6 +38,7 @@ public class UserService {
     private final GroupRepository groupRepository;
     private final HomeWorkRepository homeWorkRepository;
     private final HomeWorkService homeWorkService;
+    private final LessonRepository lessonRepository;
 
     public ApiResponse saveTeacher(ReqTeacher reqTeacher){
         boolean exists = userRepository.existsByPhoneNumber(reqTeacher.getPhoneNumber());
@@ -87,7 +90,7 @@ public class UserService {
                     .build();
             resGroupStudentCounts.add(resGroupStu);
         }
-        TeacherDto.builder()
+        TeacherDto teacherDto = TeacherDto.builder()
                 .firstName(user.getFirstname())
                 .lastName(user.getLastname())
                 .phoneNumber(user.getPhoneNumber())
@@ -95,7 +98,7 @@ public class UserService {
                 .resGroupStudentCount(resGroupStudentCounts)
                 .categoryName(categoryName)
                 .build();
-        return new ApiResponse("Success",true, HttpStatus.OK,resGroupStudentCounts);
+        return new ApiResponse("Success",true, HttpStatus.OK,teacherDto);
     }
 
     public  ApiResponse deActiveTeacher(UUID teacherId, Boolean active){
@@ -221,8 +224,22 @@ public class UserService {
         return new ApiResponse("Failed",  HttpStatus.BAD_REQUEST);
     }
 
-    public ApiResponse getStudentsHomework(User user, Integer lessonId){
-        List<StudentHomeworkDTO> studentsHomeworks = homeWorkRepository.getStudentsHomeworks(user.getId(), lessonId);
+    public ApiResponse getStudentsHomework(UUID studentId, Integer lessonId){
+        List<StudentHomeworkDTO> studentsHomeworks = homeWorkRepository.getStudentsHomeworks(studentId, lessonId);
         return new ApiResponse("Success", HttpStatus.OK, studentsHomeworks);
+    }
+
+    public ApiResponse getStudentList(User user){
+        List<StudentListDto> studentList = new ArrayList<>();
+        for (User users : homeWorkRepository.getStudentList(user.getId())) {
+            Integer lessonByStudent = lessonRepository.findLessonByStudent(users.getId());
+            StudentListDto student = StudentListDto.builder()
+                    .studentId(users.getId())
+                    .fullName(users.getFirstname()+" "+users.getLastname())
+                    .lessonId(lessonByStudent)
+                    .build();
+            studentList.add(student);
+        }
+        return new ApiResponse("Success", HttpStatus.OK, studentList);
     }
 }

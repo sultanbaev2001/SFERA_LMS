@@ -9,12 +9,14 @@ import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.payload.ApiResponse;
 import sfera.payload.StatisticDto;
+import sfera.payload.res.CategoryStatistics;
 import sfera.payload.res.ResCategory;
 import sfera.payload.top.TopGroupDTO;
 import sfera.payload.top.TopStudentDTO;
 import sfera.payload.top.TopTeacherDTO;
 import sfera.repository.CategoryRepository;
 import sfera.repository.GroupRepository;
+import sfera.repository.HomeWorkRepository;
 import sfera.repository.UserRepository;
 
 import java.util.*;
@@ -27,6 +29,7 @@ public class StatisticService {
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
     private final HomeWorkService homeWorkService;
+    private final HomeWorkRepository homeWorkRepository;
 
     public ApiResponse getAllCount(){
         Integer teacherCount = userRepository.countByRoleAndActiveTrue(ERole.ROLE_TEACHER);
@@ -58,7 +61,7 @@ public class StatisticService {
             }
             ResCategory resCategory=ResCategory.builder()
                     .categoryName(category.getName())
-                    .percentage(percentage*100)
+                    .percentage(percentage)
                     .build();
             resCategoryList.add(resCategory);
         }
@@ -66,43 +69,11 @@ public class StatisticService {
     }
 
 
+    public ApiResponse getCategoryByYearlyStatistic(){
+        List<CategoryStatistics> categoryStatistics = homeWorkRepository.findCategoryStatistics();
+        return new ApiResponse("Success",true,HttpStatus.OK,categoryStatistics);
+    }
 
-
-
-
-
-//    public ApiResponse getPercentageByCategoryYears() {
-//        List<Category> categories = categoryRepository.findByActiveTrue();
-//        List<ResCategory> resCategoryList = new ArrayList<>();
-//
-//        if (categories.isEmpty()) {
-//            return new ApiResponse("Categories not found", false, HttpStatus.BAD_REQUEST, null);
-//        }
-//
-//        for (Category category : categories) {
-//            double yearlyPercentage = 0;
-//            List<User> students = userRepository.findAllByGroup_CategoryAndRoleAndActiveTrue(category, ERole.ROLE_STUDENT);
-//            int studentCount = students.size();
-//
-//            for (User student : students) {
-//                    // Joriy oy uchun foizni olish
-//                double monthlyPercentage = homeWorkService.getHomeworksByStudentPercentageOfMonth(student);
-//                yearlyPercentage += monthlyPercentage;
-//            }
-//
-//            // O'rtacha yillik foizni hisoblash
-//            double averageYearlyPercentage = (studentCount > 0) ? (yearlyPercentage / studentCount) * 100 : 0;
-//
-//            ResCategory resCategory = ResCategory.builder()
-//                    .categoryName(category.getName())
-//                    .percentage(averageYearlyPercentage)
-//                    .build();
-//
-//            resCategoryList.add(resCategory);
-//        }
-//
-//        return new ApiResponse("Success", true, HttpStatus.OK, resCategoryList);
-//    }
 
 
 
@@ -131,8 +102,7 @@ public class StatisticService {
                     Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
                     TopStudentDTO topStudentDTO = TopStudentDTO.builder()
                             .studentId(user.getId())
-                            .firstName(user.getFirstname())
-                            .lastName(user.getLastname())
+                            .fullName(user.getFirstname() + " " + user.getLastname())
                             .groupName(user.getGroup().getName())
                             .score(score)
                             .build();
@@ -197,8 +167,7 @@ public class StatisticService {
                     }
                     TopTeacherDTO topTeacherDTO = TopTeacherDTO.builder()
                             .teacherId(teacher.getId())
-                            .firstName(teacher.getFirstname())
-                            .lastName(teacher.getLastname())
+                            .fullName(teacher.getFirstname() + " " + teacher.getLastname())
                             .phoneNumber(teacher.getPhoneNumber())
                             .score(sumScore)
                             .build();

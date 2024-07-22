@@ -13,6 +13,9 @@ import sfera.payload.ResLessonDTO;
 import sfera.payload.req.ReqLesson;
 import sfera.payload.TaskDto;
 import sfera.payload.res.ResLesson;
+import sfera.payload.res.ResLessonAdmin;
+import sfera.payload.res.ResLessons;
+import sfera.payload.res.ResModuleByLesson;
 import sfera.repository.LessonRepository;
 import sfera.repository.ModuleRepository;
 import sfera.repository.TaskRepository;
@@ -123,6 +126,45 @@ public class LessonService {
         taskRepository.deleteAll(lesson.getTaskList());
         lessonRepository.delete(lesson);
         return new ApiResponse("Lesson successfully deleted", HttpStatus.OK);
+    }
+
+    public ApiResponse getModuleByLesson(){
+        List<ResLessonAdmin> resLessonAdminList=new ArrayList<>();
+        List<Module> modules = moduleRepository.findAll();
+        if (modules.isEmpty()){
+            return new ApiResponse("Module not found", HttpStatus.NOT_FOUND);
+        }
+        for (Module module : modules) {
+            Integer lessonCount = lessonRepository.countByModule(module);
+            ResLessonAdmin resLessonAdmin=ResLessonAdmin.builder()
+                    .moduleId(module.getId())
+                    .moduleName(module.getOrderName())
+                    .lessonCount(lessonCount)
+                    .build();
+            resLessonAdminList.add(resLessonAdmin);
+        }
+        return new ApiResponse("Success",HttpStatus.OK,resLessonAdminList);
+    }
+
+    public ApiResponse getLessons(int moduleId){
+        Module module = moduleRepository.findById(moduleId).orElseThrow(() -> GenericException.builder()
+                .message("Module not found").statusCode(404).build());
+        List<Lesson> lessons = lessonRepository.findByModule(module);
+        if (lessons.isEmpty()){
+            return new ApiResponse("Lesson not found", HttpStatus.NOT_FOUND);
+        }
+        List<ResLessons> resLessonsList=new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            ResLessons resLessons=ResLessons.builder()
+                    .lessonId(lesson.getId())
+                    .lessonName(lesson.getName())
+                    .build();
+            resLessonsList.add(resLessons);
+        }
+        ResModuleByLesson resModuleByLesson=ResModuleByLesson.builder()
+                .moduleName(module.getOrderName())
+                .resLessonList(resLessonsList).build();
+        return new ApiResponse("Success",HttpStatus.OK,resModuleByLesson);
     }
 
 

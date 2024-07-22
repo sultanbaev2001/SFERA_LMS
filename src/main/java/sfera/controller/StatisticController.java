@@ -1,6 +1,7 @@
 package sfera.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class StatisticController {
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "ADMIN category, modul, teacher va studentlarni sonini olish")
     @GetMapping("countBy/")
     public ResponseEntity<ApiResponse> getAllCountByStatistic(){
         ApiResponse apiResponse = statisticService.getAllCount();
@@ -26,6 +28,7 @@ public class StatisticController {
     }
 
 
+    @Operation(summary = "ADMIN bir oylik statistika",description = "ADMIN dashboard dumaloq statistika")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("percentage/")
     public ResponseEntity<ApiResponse> getPercentageStatistic(){
@@ -33,8 +36,16 @@ public class StatisticController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("categoryByYearlyStatistics/")
+    public ResponseEntity<ApiResponse> getCategoryByYearlyStatistic(){
+        ApiResponse apiResponse = statisticService.getCategoryByYearlyStatistic();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Admin top 5ta studentni korishi uchun")
     @GetMapping("top/student")
     public ResponseEntity<ApiResponse> getTopStudent(){
         ApiResponse apiResponse = statisticService.getTopStudent();
@@ -42,6 +53,7 @@ public class StatisticController {
     }
 
 
+    @Operation(summary = "Admin top 5ta guruhni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("top/group")
     public ResponseEntity<ApiResponse> getTopGroup(){
@@ -50,6 +62,7 @@ public class StatisticController {
     }
 
 
+    @Operation(summary = "Admin top 5ta teacherni korishi uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("top/teacher")
     public ResponseEntity<ApiResponse> getTopTeacher(){

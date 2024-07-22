@@ -1,17 +1,17 @@
-package sfera.payload.top;
+package sfera.payload.res;
 
 import lombok.*;
-
-import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TopStudentDTO {
-    private UUID studentId;
+public class ResRateStudent {
+
     private String fullName;
+    private String categoryName;
     private String groupName;
-    private Integer score;
+    private int rate;
+    private int score;
 }
