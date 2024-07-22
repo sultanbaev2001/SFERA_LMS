@@ -103,9 +103,8 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     List<User> getStudentList(@Param("teacherId") UUID teacherId);
 
 
-
-
-    List<HomeWork> findAllByTaskId(Integer taskId);
+    @Query(value = "UPDATE home_work hw SET score = :inScore WHERE hw.student_id = :studentId AND hw.id = :homeworkId", nativeQuery = true)
+    boolean updateHomeWorkByScore(@Param("studentId") UUID studentId, @Param("homeworkId") Integer homeworkId, @Param("inScore") Integer inScore);
 
 
 }
