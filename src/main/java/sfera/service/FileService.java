@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sfera.entity.VideoFile;
 import sfera.exception.NotFoundException;
+import sfera.entity.File;
 import sfera.payload.ApiResponse;
-import sfera.repository.VideoFileRepository;
+import sfera.repository.FileRepository;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class VideoFileService {
+public class FileService {
 
     @Value("${file.upload-dir1}")
     private String uploadDir;
@@ -32,7 +33,7 @@ public class VideoFileService {
     private String uploadDir2;
 
 
-    private final VideoFileRepository videoFileRepository;
+    private final FileRepository fileRepository;
 
 
     private static final Path root= Paths.get("src/main/resources/");
@@ -49,6 +50,10 @@ public class VideoFileService {
         try {
             Files.copy(file.getInputStream(), resolve);
             VideoFile videoFile = new VideoFile();
+            Path filePath = uploadPath.resolve(file.getOriginalFilename());
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            File videoFile = new File();
             videoFile.setFileName(file.getOriginalFilename());
             videoFile.setFilepath(root.resolve(director + "/" + file.getOriginalFilename()).toString());
             videoFileRepository.save(videoFile);
@@ -65,8 +70,41 @@ public class VideoFileService {
                 file.getOriginalFilename().endsWith(".mkv")) {
             return "video";
         }else if(file.getOriginalFilename().endsWith(".png") ||
+            videoFile.setFilepath(filePath.toString());
+            fileRepository.save(videoFile);
+            return new ApiResponse("Successfully saved file", HttpStatus.OK,videoFile);
+        } else if (file.getOriginalFilename().endsWith(".png") ||
                 file.getOriginalFilename().endsWith(".jpg")||
                 file.getOriginalFilename().endsWith(".webp")) {
+
+
+            Path uploadPath = Paths.get(uploadDir3);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(file.getOriginalFilename());
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            File videoFile = new File();
+            videoFile.setFileName(file.getOriginalFilename());
+            videoFile.setFilepath(filePath.toString());
+            fileRepository.save(videoFile);
+            return new ApiResponse("Successfully saved file", HttpStatus.OK,videoFile);
+        }else {
+            Path uploadPath = Paths.get(uploadDir2);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(file.getOriginalFilename());
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            File videoFile = new File();
+            videoFile.setFileName(file.getOriginalFilename());
+            videoFile.setFilepath(filePath.toString());
+            fileRepository.save(videoFile);
+            return new ApiResponse("Successfully saved file", HttpStatus.OK,videoFile);
             return "img";
         }
         return null;
@@ -87,10 +125,10 @@ public class VideoFileService {
 
 
 //    update
-public VideoFile updateFile(Long id, MultipartFile file) throws IOException {
-    Optional<VideoFile> existingVideoFile = videoFileRepository.findById(id);
+public File updateFile(Long id, MultipartFile file) throws IOException {
+    Optional<File> existingVideoFile = fileRepository.findById(id);
     if (existingVideoFile.isPresent()) {
-        VideoFile videoFile = existingVideoFile.get();
+        File videoFile = existingVideoFile.get();
         Path oldFilePath = Paths.get(videoFile.getFilepath());
         Files.deleteIfExists(oldFilePath);
 
@@ -118,7 +156,7 @@ public VideoFile updateFile(Long id, MultipartFile file) throws IOException {
         videoFile.setFileName(filename);
         videoFile.setFilepath(filePath.toString());
 
-        return videoFileRepository.save(videoFile);
+        return fileRepository.save(videoFile);
     } else {
         throw new IOException("File not found");
     }
@@ -127,12 +165,12 @@ public VideoFile updateFile(Long id, MultipartFile file) throws IOException {
 
 //delete file
 public ApiResponse deleteFile(Long id) throws IOException {
-    Optional<VideoFile> existingVideoFile = videoFileRepository.findById(id);
+    Optional<File> existingVideoFile = fileRepository.findById(id);
     if (existingVideoFile.isPresent()) {
-        VideoFile videoFile = existingVideoFile.get();
+        File videoFile = existingVideoFile.get();
         Path filePath = Paths.get(videoFile.getFilepath());
         Files.deleteIfExists(filePath);
-        videoFileRepository.delete(videoFile);
+        fileRepository.delete(videoFile);
         return new ApiResponse("Successfully deleted",HttpStatus.OK);
     } else {
         throw new IOException("File not found");

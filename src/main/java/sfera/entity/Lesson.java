@@ -28,5 +28,5 @@ public class Lesson {
     @UpdateTimestamp
     private Timestamp updatedAt;
     @OneToMany
-    private List<VideoFile> videoFile;
+    private List<File> files;
 }

@@ -58,7 +58,7 @@ public class StudentController {
     @Operation(summary = "Student tasklarini korish")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     @GetMapping("/tasks")
-    public ResponseEntity<ApiResponse> getStudentHomeworks(@CurrentUser User user){
+    public ResponseEntity<ApiResponse> getStudentTasks(@CurrentUser User user){
         ApiResponse apiResponse = studentService.getStudentTasks(user);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
