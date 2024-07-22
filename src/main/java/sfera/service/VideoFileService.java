@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sfera.entity.VideoFile;
+import sfera.exception.NotFoundException;
 import sfera.payload.ApiResponse;
 import sfera.repository.VideoFileRepository;
 
@@ -29,79 +30,59 @@ public class VideoFileService {
     private String uploadDir;
     @Value("${file.upload-dir2}")
     private String uploadDir2;
-    @Value("${file.upload-dir3}")
-    private String uploadDir3;
+
 
     private final VideoFileRepository videoFileRepository;
 
 
-//    SaveFile uchun
-    public ApiResponse saveFile(MultipartFile file) throws IOException {
+    private static final Path root= Paths.get("src/main/resources/");
+
+
+    public ApiResponse saveFile(MultipartFile file)
+    {
+        String director = checkingAttachmentType(file);
+        if (director == null) {
+            return new ApiResponse("File yuklash uchun papka topilmadi", HttpStatus.NOT_FOUND);
+        }
+
+        Path resolve = root.resolve(director + "/" + file.getOriginalFilename());
+        try {
+            Files.copy(file.getInputStream(), resolve);
+            VideoFile videoFile = new VideoFile();
+            videoFile.setFileName(file.getOriginalFilename());
+            videoFile.setFilepath(root.resolve(director + "/" + file.getOriginalFilename()).toString());
+            videoFileRepository.save(videoFile);
+        }catch (IOException e){
+            throw new NotFoundException(e.getMessage());
+        }
+        return new ApiResponse("Success", HttpStatus.OK);
+    }
+
+    public String checkingAttachmentType(MultipartFile file)
+    {
         if (Objects.requireNonNull(file.getOriginalFilename()).endsWith(".mp4") ||
                 file.getOriginalFilename().endsWith(".avi") ||
                 file.getOriginalFilename().endsWith(".mkv")) {
-
-
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            VideoFile videoFile = new VideoFile();
-            videoFile.setFileName(file.getOriginalFilename());
-            videoFile.setFilepath(filePath.toString());
-            videoFileRepository.save(videoFile);
-            return new ApiResponse("Successfully saved file", HttpStatus.OK,videoFile);
-        } else if (file.getOriginalFilename().endsWith(".png") ||
+            return "video";
+        }else if(file.getOriginalFilename().endsWith(".png") ||
                 file.getOriginalFilename().endsWith(".jpg")||
                 file.getOriginalFilename().endsWith(".webp")) {
-
-
-            Path uploadPath = Paths.get(uploadDir3);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            VideoFile videoFile = new VideoFile();
-            videoFile.setFileName(file.getOriginalFilename());
-            videoFile.setFilepath(filePath.toString());
-            videoFileRepository.save(videoFile);
-            return new ApiResponse("Successfully saved file", HttpStatus.OK,videoFile);
-        }else {
-            Path uploadPath = Paths.get(uploadDir2);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            VideoFile videoFile = new VideoFile();
-            videoFile.setFileName(file.getOriginalFilename());
-            videoFile.setFilepath(filePath.toString());
-            videoFileRepository.save(videoFile);
-            return new ApiResponse("Successfully saved file", HttpStatus.OK,videoFile);
+            return "img";
         }
-
+        return null;
     }
 
 //    GetFile uchun
-    public Optional<Resource> loadFileAsResource(String filename) throws MalformedURLException {
-        Optional<VideoFile> videoFileOptional = videoFileRepository.findByFileName(filename);
+    public Resource loadFileAsResource(Long id) throws MalformedURLException {
+        Optional<VideoFile> videoFileOptional = videoFileRepository.findById(id);
         if (videoFileOptional.isPresent()) {
             Path filePath = Paths.get(videoFileOptional.get().getFilepath()).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
-                return Optional.of(resource);
+                return resource;
             }
         }
-        return Optional.empty();
+        return null;
     }
 
 
@@ -122,7 +103,7 @@ public VideoFile updateFile(Long id, MultipartFile file) throws IOException {
         } else if (filename.endsWith(".png") ||
                 filename.endsWith(".jpg") ||
                 filename.endsWith(".webp")) {
-            uploadPath = Paths.get(uploadDir3);
+            uploadPath = Paths.get("root/img");
         } else {
             uploadPath = Paths.get(uploadDir2);
         }
