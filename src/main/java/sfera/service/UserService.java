@@ -135,8 +135,8 @@ public class UserService {
     }
 
     public ApiResponse getAllStudents(User teacher) {
-        List<Group> allByTeacherId = groupRepository.findAllByTeacherId(teacher.getId());
         List<ResStudent> resStudentList = new ArrayList<>();
+        List<Group> allByTeacherId = groupRepository.findAllByTeacherId(teacher.getId());
         for (Group group : allByTeacherId) {
             List<User> users = userRepository.findAllByGroupId(group.getId());
             for (User user : users) {
