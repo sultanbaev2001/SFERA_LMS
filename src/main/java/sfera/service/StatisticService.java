@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sfera.entity.Category;
 import sfera.entity.Group;
+import sfera.entity.HomeWork;
 import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.payload.ApiResponse;
@@ -151,19 +152,20 @@ public class StatisticService {
 
 //    Teacher
 
-    public ApiResponse getTopTeacher(){
-        Map<TopTeacherDTO, Integer> topTeacherMap = new HashMap<>();
+    public ApiResponse getTopTeacher() {
         List<User> teachers = userRepository.findByRole(ERole.ROLE_TEACHER);
-        if (!teachers.isEmpty()){
+
+        if (!teachers.isEmpty()) {
+            List<TopTeacherDTO> list = new ArrayList<>();
             for (User teacher : teachers) {
-                if (teacher.isActive()){
+                if (teacher.isActive()) {
                     int sumScore = 0;
-                    for (Group group : groupRepository.findAllByTeacherId(teacher.getId())) {
-                        if (group.isActive()){
-                            Integer score = homeWorkService.getTotalScoreByGroupAndCurrentMonth(group);
-                            sumScore+=score;
-                        }
-                    }
+                    List<Group> groups = groupRepository.findAllByTeacherId(teacher.getId());
+                    sumScore = groups.stream().filter(Group::isActive)
+                            .map(homeWorkService::getTotalScoreByGroupAndCurrentMonth)
+                            .filter(Objects::nonNull)
+                            .mapToInt(Integer::intValue).sum();
+
                     TopTeacherDTO topTeacherDTO = TopTeacherDTO.builder()
                             .teacherId(teacher.getId())
                             .fullName(teacher.getFirstname() + " " + teacher.getLastname())
@@ -171,17 +173,14 @@ public class StatisticService {
                             .score(sumScore)
                             .build();
 
-                    topTeacherMap.put(topTeacherDTO, sumScore);
+                    list.add(topTeacherDTO);
                 }
             }
 
-            List<TopTeacherDTO> topTeachers = topTeacherMap.entrySet().stream()
-                    .sorted(Map.Entry.<TopTeacherDTO, Integer>comparingByValue().reversed())
-                    .limit(5)
-                    .map(Map.Entry::getKey)
-                    .toList();
+            List<TopTeacherDTO> list1 = list.stream().sorted(Comparator.comparing(TopTeacherDTO::getScore)
+                    .reversed()).limit(5).toList();
 
-            return new ApiResponse("Success", true, HttpStatus.OK, topTeachers);
+            return new ApiResponse("Success", true, HttpStatus.OK, list1);
         }
         return new ApiResponse("Failed", false, HttpStatus.BAD_REQUEST, null);
     }

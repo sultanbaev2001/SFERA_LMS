@@ -28,5 +28,7 @@ public class HomeWork {
     @OneToOne
     private File file;
 
+    private boolean checked;
+
 
 }
