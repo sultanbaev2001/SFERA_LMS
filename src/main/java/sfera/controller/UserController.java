@@ -87,7 +87,7 @@ public class UserController {
 
 
     @Operation(summary = "TEACHER Student panel get qilish uchun")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @GetMapping("/getAllStudents")
     public ResponseEntity<ApiResponse> getAllStudents(@CurrentUser User user) {
         ApiResponse apiResponse = userService.getAllStudents(user);

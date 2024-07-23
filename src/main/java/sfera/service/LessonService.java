@@ -39,19 +39,30 @@ public class LessonService {
     public ApiResponse saveLesson(ReqLesson lessonDTO){
         Module module = moduleRepository.findById(lessonDTO.getModuleId())
                 .orElseThrow(() -> GenericException.builder().message("Module not found").statusCode(404).build());
+        List<Task> taskList = new ArrayList<>();
         boolean existsed = lessonRepository.existsByNameAndModuleNot(lessonDTO.getName(), module);
         if (!existsed) {
-            for (Long id : lessonDTO.getFileIds()) {
-                List<File> allByFileName = fileRepository.findAllById(id);
-                File file = fileRepository.findById(id)
-                        .orElseThrow(() -> GenericException.builder().message("Video file not found").statusCode(404).build());
-                List<Task> taskList = new ArrayList<>();
+
+            if (lessonDTO.getFileIds().isEmpty()){
                 for (TaskDto taskDto : lessonDTO.getTaskDtoList()) {
-                    taskList.add(addTask(taskDto,file));
+                    taskList.add(addTasks(taskDto));
                 }
-                addLesson(lessonDTO, module, taskList, allByFileName);
-                return new ApiResponse("Lesson successfully saved", HttpStatus.OK);
+                addLessons(lessonDTO,module,taskList);
+                return new ApiResponse("Lesson successfully saved ", HttpStatus.OK,null);
+
+            }else {
+                for (Long id : lessonDTO.getFileIds()) {
+                    List<File> allByFileName = fileRepository.findAllById(id);
+                    File file = fileRepository.findById(id)
+                            .orElseThrow(() -> GenericException.builder().message("Video file not found").statusCode(404).build());
+                    for (TaskDto taskDto : lessonDTO.getTaskDtoList()) {
+                        taskList.add(addTask(taskDto,file));
+                    }
+                    addLesson(lessonDTO, module, taskList, allByFileName);
+                }
+                    return new ApiResponse("Lesson successfully saved", HttpStatus.OK,null);
             }
+
         }
         return new ApiResponse("Lesson already exists", HttpStatus.CONFLICT);
     }
@@ -178,11 +189,30 @@ public class LessonService {
         return lessonRepository.save(lesson);
     }
 
+    private Lesson addLessons(ReqLesson lessonDTO, Module module, List<Task> taskList){
+        Lesson lesson=Lesson.builder()
+                .name(lessonDTO.getName())
+                .module(module)
+                .taskList(taskList)
+                .build();
+        return lessonRepository.save(lesson);
+    }
+
     public Task addTask(TaskDto taskDto, File file){
         Task task= Task.builder()
                 .name(taskDto.getName())
                 .description(taskDto.getDescription())
                 .file(file)
+                .build();
+        return taskRepository.save(task);
+    }
+
+
+
+    public Task addTasks(TaskDto taskDto){
+        Task task= Task.builder()
+                .name(taskDto.getName())
+                .description(taskDto.getDescription())
                 .build();
         return taskRepository.save(task);
     }

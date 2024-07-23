@@ -14,6 +14,5 @@ public class ReqStudent {
     private String lastname;
     private String phoneNumber;
     private String password;
-    private Integer categoryId;
     private Integer groupId;
 }

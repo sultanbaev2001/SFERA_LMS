@@ -15,7 +15,6 @@ public class ReqLesson {
     private Integer id;
     private String name;
     private Integer moduleId;
-    private Integer categoryId;
     private List<TaskDto> taskDtoList;
     private List<Long> fileIds;
 }
