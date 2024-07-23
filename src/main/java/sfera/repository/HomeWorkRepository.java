@@ -53,6 +53,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "JOIN hw.student u " +
             "JOIN u.group g " +
             "JOIN g.category c " +
+//            "WHERE hw.checked = true " +
             "GROUP BY c.name, month " +
             "ORDER BY c.name, month")
     List<CategoryStatistics> findCategoryStatistics();
