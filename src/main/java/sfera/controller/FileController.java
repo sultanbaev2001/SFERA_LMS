@@ -51,9 +51,9 @@ public class FileController {
 
 
     @PutMapping(value = "/update/{id}",consumes = {"multipart/form-data"})
-    public ResponseEntity<File> updateFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResponse> updateFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
-            File updatedFile = videoFileService.updateFile(id, file);
+            ApiResponse updatedFile = videoFileService.updateFile(id, file);
             return ResponseEntity.ok(updatedFile);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
