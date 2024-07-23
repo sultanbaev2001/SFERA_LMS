@@ -188,7 +188,8 @@ public class UserService {
         User student = userRepository.findById(id)
                 .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
         student.setActive(active);
-        return new ApiResponse("Student successfully updated", HttpStatus.OK);
+        userRepository.save(student);
+        return new ApiResponse("Student successfully updated", HttpStatus.OK,null);
     }
 
 

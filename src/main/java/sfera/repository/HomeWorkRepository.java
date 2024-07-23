@@ -53,6 +53,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "JOIN hw.student u " +
             "JOIN u.group g " +
             "JOIN g.category c " +
+//            "WHERE hw.checked = true " +
             "GROUP BY c.name, month " +
             "ORDER BY c.name, month")
     List<CategoryStatistics> findCategoryStatistics();
@@ -64,6 +65,14 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "GROUP BY g.name, month " +
             "ORDER BY g.name, month")
     List<GroupStatistics> findGroupStatistics();
+
+    @Query("SELECT new sfera.payload.res.GroupStatistics(g.name, EXTRACT(MONTH FROM hw.dueDate) as month, SUM(hw.score) as totalScore) " +
+            "FROM HomeWork hw " +
+            "JOIN hw.student u " +
+            "JOIN u.group g WHERE g.teacher.id=:teacherId " +
+            "GROUP BY g.name, month " +
+            "ORDER BY g.name, month")
+    List<GroupStatistics> findGroupStatisticsByTeacher(@Param("teacherId") UUID teacherId);
 
 
 
