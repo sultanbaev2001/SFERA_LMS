@@ -121,7 +121,8 @@ public class UserService {
     public ApiResponse saveStudent(ReqStudent studentDTO) {
         Group group = groupRepository.findById(studentDTO.getGroupId())
                 .orElseThrow(() -> GenericException.builder().message("Group not found").statusCode(404).build());
-
+        boolean existsed = userRepository.existsByPhoneNumber(studentDTO.getPhoneNumber());
+        if(!existsed){
             User user = User.builder()
                     .firstname(studentDTO.getFirstname())
                     .lastname(studentDTO.getLastname())
@@ -132,6 +133,8 @@ public class UserService {
                     .build();
             userRepository.save(user);
             return new ApiResponse("Student successfully saved", HttpStatus.OK);
+        }
+        return new ApiResponse("Student already exists",true, HttpStatus.BAD_REQUEST,null);
     }
 
     public ApiResponse getAllStudents(User teacher) {
