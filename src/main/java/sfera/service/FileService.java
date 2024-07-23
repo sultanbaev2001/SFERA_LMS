@@ -56,44 +56,27 @@ public class FileService {
         }catch (IOException e){
             throw new NotFoundException(e.getMessage());
         }
-        return new ApiResponse("Success", HttpStatus.OK,files);
+        return new ApiResponse("Success", HttpStatus.OK,files.getId());
     }
 
-    public String checkingAttachmentType(MultipartFile file)
-    {
-        if (Objects.requireNonNull(file.getOriginalFilename()).endsWith(".mp4") ||
-                file.getOriginalFilename().endsWith(".avi") ||
-                file.getOriginalFilename().endsWith(".mkv")) {
-            return "video";
-        }else if(file.getOriginalFilename().endsWith(".png") ||
-                file.getOriginalFilename().endsWith(".jpg")||
-                file.getOriginalFilename().endsWith(".webp")) {
-            return "img";
-        } else if (file.getOriginalFilename().endsWith(".pptx")||
-        file.getOriginalFilename().endsWith(".txt")||
-        file.getOriginalFilename().endsWith(".docx")||
-        file.getOriginalFilename().endsWith(".pdf")){
-            return "files";
-        }
-        return null;
-    }
+
 
 //    GetFile uchun
-    public Resource loadFileAsResource(Long id) throws MalformedURLException {
-        Optional<File> videoFileOptional = videoFileRepository.findById(id);
-        if (videoFileOptional.isPresent()) {
-            Path filePath = Paths.get(videoFileOptional.get().getFilepath()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if (resource.exists()) {
-                return resource;
-            }
+public Resource loadFileAsResource(Long id) throws MalformedURLException {
+    Optional<File> videoFileOptional = videoFileRepository.findById(id);
+    if (videoFileOptional.isPresent()) {
+        Path filePath = Paths.get(videoFileOptional.get().getFilepath()).normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+        if (resource.exists()) {
+            return resource;
         }
-        return null;
     }
+    return null;
+}
 
 
 //    update
-public File updateFile(Long id, MultipartFile file) throws IOException {
+public ApiResponse updateFile(Long id, MultipartFile file) throws IOException {
     Optional<File> existingVideoFile = videoFileRepository.findById(id);
     if (existingVideoFile.isPresent()) {
         File videoFile = existingVideoFile.get();
@@ -101,22 +84,16 @@ public File updateFile(Long id, MultipartFile file) throws IOException {
         Files.deleteIfExists(oldFilePath);
 
         String filename = file.getOriginalFilename();
-        Path uploadPath;
-        if (Objects.requireNonNull(filename).endsWith(".mp4") ||
-                filename.endsWith(".avi") ||
-                filename.endsWith(".mkv")) {
-            uploadPath = Paths.get(uploadDir);
-        } else if (filename.endsWith(".png") ||
-                filename.endsWith(".jpg") ||
-                filename.endsWith(".webp")) {
-            uploadPath = Paths.get("root/img");
-        } else {
-            uploadPath = Paths.get(uploadDir2);
+        String director=checkingAttachmentType(file);
+        if (director == null) {
+            return new ApiResponse("File yuklash uchun papka topilmadi", HttpStatus.NOT_FOUND);
         }
 
+        Path uploadPath = root.resolve(director + "/" + file.getOriginalFilename());
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
+        File file1;
 
         Path filePath = uploadPath.resolve(filename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -124,7 +101,8 @@ public File updateFile(Long id, MultipartFile file) throws IOException {
         videoFile.setFileName(filename);
         videoFile.setFilepath(filePath.toString());
 
-        return videoFileRepository.save(videoFile);
+        file1=videoFileRepository.save(videoFile);
+        return new ApiResponse("Success", HttpStatus.OK,file1.getId());
     } else {
         throw new IOException("File not found");
     }
@@ -144,4 +122,26 @@ public ApiResponse deleteFile(Long id) throws IOException {
         throw new IOException("File not found");
     }
 }
+
+
+
+
+    public String checkingAttachmentType(MultipartFile file)
+    {
+        if (Objects.requireNonNull(file.getOriginalFilename()).endsWith(".mp4") ||
+                file.getOriginalFilename().endsWith(".avi") ||
+                file.getOriginalFilename().endsWith(".mkv")) {
+            return "video";
+        }else if(file.getOriginalFilename().endsWith(".png") ||
+                file.getOriginalFilename().endsWith(".jpg")||
+                file.getOriginalFilename().endsWith(".webp")) {
+            return "img";
+        } else if (file.getOriginalFilename().endsWith(".pptx")||
+                file.getOriginalFilename().endsWith(".txt")||
+                file.getOriginalFilename().endsWith(".docx")||
+                file.getOriginalFilename().endsWith(".pdf")){
+            return "files";
+        }
+        return null;
+    }
 }
