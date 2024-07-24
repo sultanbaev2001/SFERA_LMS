@@ -13,6 +13,7 @@ import sfera.exception.GenericException;
 import sfera.payload.ApiResponse;
 import sfera.repository.HomeWorkRepository;
 import sfera.repository.LessonRepository;
+import sfera.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +27,7 @@ public class HomeWorkService {
 
     private final HomeWorkRepository homeWorkRepository;
     private final LessonRepository lessonRepository;
+    private final UserRepository userRepository;
 
 
     LocalDate startDate = LocalDate.now().withDayOfMonth(1); // Bu oyning birinchi kuni
@@ -61,12 +63,22 @@ public class HomeWorkService {
                 checkLesson=lesson;
             }
         }
-        return (double) score/sum;
+        return score == null ? 0 : (double) score/sum;
     }
 
     public ApiResponse updateHomeworkScore(UUID studentId, Integer homeworkId, Integer inScore){
-        boolean updated = homeWorkRepository.updateHomeWorkByScore(studentId, homeworkId, inScore);
-        if (updated){
+//        boolean updated = homeWorkRepository.updateHomeWorkByScore(studentId, homeworkId, inScore);
+        HomeWork homeWork = homeWorkRepository.findById(homeworkId).orElseThrow(() -> GenericException.builder()
+                .message("Homework Not Found")
+                .statusCode(404)
+                .build());
+        User user = userRepository.findById(studentId).orElseThrow(() -> GenericException.builder()
+                .message("Student Not Found")
+                .statusCode(404)
+                .build());
+        if (homeWork.getStudent().getId().equals(user.getId())){
+            homeWork.setScore(inScore);
+            homeWorkRepository.save(homeWork);
             return new ApiResponse("Success", HttpStatus.OK, null);
         }
         return new ApiResponse("Not success",HttpStatus.OK, null);
