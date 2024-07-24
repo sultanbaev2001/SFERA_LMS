@@ -63,7 +63,7 @@ public class HomeWorkService {
                 checkLesson=lesson;
             }
         }
-        return (double) score/sum;
+        return score == null ? 0 : (double) score/sum;
     }
 
     public ApiResponse updateHomeworkScore(UUID studentId, Integer homeworkId, Integer inScore){
