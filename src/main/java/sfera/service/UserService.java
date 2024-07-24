@@ -10,6 +10,7 @@ import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.exception.UserNotFoundException;
 import sfera.payload.ApiResponse;
+import sfera.payload.res.ResStudentDTO;
 import sfera.payload.teacher_homework.StudentHomeworkDTO;
 import sfera.payload.TeacherDto;
 import sfera.payload.req.ReqTeacher;
@@ -137,7 +138,7 @@ public class UserService {
         return new ApiResponse("Student already exists",true, HttpStatus.BAD_REQUEST,null);
     }
 
-    public ApiResponse getAllStudents(User teacher) {
+    public ApiResponse getAllStudentsByTeacher(User teacher) {
         List<ResStudent> resStudentList = new ArrayList<>();
         List<Group> allByTeacherId = groupRepository.findAllByTeacherId(teacher.getId());
         for (Group group : allByTeacherId) {
@@ -161,6 +162,24 @@ public class UserService {
         }
         return new ApiResponse("All students successfully retrieved", HttpStatus.OK, resStudentList);
     }
+
+
+
+    public ApiResponse getAllStudents(){
+        List<User> byRole = userRepository.findByRole(ERole.ROLE_STUDENT);
+        List<ResStudentDTO> resStudentDTOList = new ArrayList<>();
+        for (User user : byRole) {
+            ResStudentDTO resStudentDTO= ResStudentDTO.builder()
+                    .fullName(user.getFirstname() + " " + user.getLastname())
+                    .phoneNumber(user.getPhoneNumber())
+                    .categoryName(user.getGroup().getCategory().getName())
+                    .active(user.isActive())
+                    .build();
+            resStudentDTOList.add(resStudentDTO);
+        }
+        return new ApiResponse("All students successfully retrieved", HttpStatus.OK, resStudentDTOList);
+    }
+
 
 
     public ApiResponse updateStudent(UUID id,ReqStudent studentDTO) {
