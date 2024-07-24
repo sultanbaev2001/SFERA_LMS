@@ -94,12 +94,15 @@ public class StatisticService {
 //    Student
     public ApiResponse getTopStudent(){
 
-        Map<TopStudentDTO, Integer> topStudentMap = new HashMap<>();
         List<User> activeStudents = userRepository.findByRole(ERole.ROLE_STUDENT);
         if (!activeStudents.isEmpty()){
+            Map<TopStudentDTO, Integer> topStudentMap = new HashMap<>();
             for (User user : activeStudents) {
                 if (user.isActive()){
                     Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
+                    if(score == null){
+                        continue;
+                    }
                     TopStudentDTO topStudentDTO = TopStudentDTO.builder()
                             .studentId(user.getId())
                             .fullName(user.getFirstname() + " " + user.getLastname())
@@ -110,11 +113,12 @@ public class StatisticService {
                 }
             }
 
-            List<TopStudentDTO> topStudens = topStudentMap.entrySet().stream()
-                    .sorted(Map.Entry.<TopStudentDTO, Integer>comparingByValue().reversed())
-                    .limit(5)
-                    .map(Map.Entry::getKey)
-                    .toList();
+
+                List<TopStudentDTO> topStudens = topStudentMap.entrySet().stream()
+                        .sorted(Map.Entry.<TopStudentDTO, Integer>comparingByValue().reversed())
+                        .limit(5)
+                        .map(Map.Entry::getKey)
+                        .toList();
 
             return new ApiResponse("Success", true, HttpStatus.OK, topStudens);
         }
