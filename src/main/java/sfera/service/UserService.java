@@ -105,7 +105,8 @@ public class UserService {
     public  ApiResponse deActiveTeacher(UUID teacherId, Boolean active){
         User user = userRepository.findById(teacherId).orElseThrow(UserNotFoundException::new);
         user.setActive(active);
-        return new ApiResponse("Successfully edited user",true, HttpStatus.OK,user);
+        userRepository.save(user);
+        return new ApiResponse("Successfully edited user",true, HttpStatus.OK,null);
     }
 
     public ApiResponse editTeacher(UUID teacherId, ReqTeacher reqTeacher){
@@ -115,7 +116,7 @@ public class UserService {
         user.setPhoneNumber(reqTeacher.getPhoneNumber());
         user.setPassword(passwordEncoder.encode(reqTeacher.getPassword()));
         userRepository.save(user);
-        return new ApiResponse("Successfully edited user",true, HttpStatus.OK,user);
+        return new ApiResponse("Successfully edited user",true, HttpStatus.OK,null);
     }
 
 
@@ -131,6 +132,7 @@ public class UserService {
                     .password(passwordEncoder.encode(studentDTO.getPassword()))
                     .group(group)
                     .role(ERole.ROLE_STUDENT)
+                    .active(true)
                     .build();
             userRepository.save(user);
             return new ApiResponse("Student successfully saved", HttpStatus.OK);

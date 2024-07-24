@@ -33,29 +33,6 @@ public class RateController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @Operation(summary ="Admin rate panel studentni search qilish uchun")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/search-student/")
-    public ResponseEntity<ApiResponse> getSearchStudents(@RequestParam String keyword) {
-        ApiResponse apiResponse = rateService.searchStudentRate(keyword);
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-    }
-
-    @Operation(summary = "Admin rate panel group boyicha studentlar")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/groupByStudentRate/{groupId}")
-    public ResponseEntity<ApiResponse> getGroupByStudentRate(@PathVariable int groupId) {
-        ApiResponse apiResponse = rateService.getStudentRateByGroup(groupId);
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-    }
-
-    @Operation(summary = "Admin rate panel category boyicha studentlar")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/categoryByStudentRate/{categoryId}")
-    public ResponseEntity<ApiResponse> getCategoryByStudentRate(@PathVariable int categoryId) {
-        ApiResponse apiResponse = rateService.getStudentRateByCategory(categoryId);
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-    }
 
     @Operation(summary = "Teacher dashboard uchun yillik statistika")
     @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -63,6 +40,16 @@ public class RateController {
     public ResponseEntity<ApiResponse> getTeacherDashboard(@CurrentUser User user) {
         ApiResponse apiResponse = rateService.getStatisticForTeacher(user);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @Operation(summary = "Admin rate paneldagi studentlar listi search,group, category bo'yicha")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("filter/")
+    public ResponseEntity<ApiResponse> filter(@RequestParam(required = false) String keyword,
+                                              @RequestParam(required = false) Integer groupId,
+                                              @RequestParam(required = false) Integer categoryId){
+        ApiResponse students = rateService.getStudents(keyword, groupId, categoryId);
+        return ResponseEntity.status(students.getStatus()).body(students);
     }
 
 

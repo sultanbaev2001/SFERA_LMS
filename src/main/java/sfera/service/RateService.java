@@ -72,6 +72,12 @@ public class RateService {
         return new ApiResponse("Success", HttpStatus.OK, groupStatisticsByTeacher);
     }
 
+    public ApiResponse getStudents(String keyword,Integer groupId,Integer categoryId){
+        List<User> students = userRepository.findAlLByStudentSearchAndGroupIdAndCategoryId(keyword, groupId, categoryId);
+        List<ResRateStudent> studentRateList = getStudentRateList(students);
+        return new ApiResponse("Success", HttpStatus.OK, studentRateList);
+    }
+
 
 
 
@@ -81,12 +87,22 @@ public class RateService {
         for (User user : students) {
             Integer score = homeWorkService.getTotalScoreByStudentsAndCurrentMonth(user);
             Integer ratingStudent = homeWorkRepository.getRatingStudent(user.getGroup().getId(), user.getId());
+
+            // Null qiymatlar uchun standart qiymatlar qo'llash
+            if (score == null) {
+                score = 0; // Yoki mos qiymat
+            }
+            if (ratingStudent == null) {
+                ratingStudent = 0; // Yoki mos qiymat
+            }
+
             ResRateStudent resRateStudent = ResRateStudent.builder()
                     .fullName(user.getFirstname() + " " + user.getLastname())
                     .categoryName(user.getGroup().getCategory().getName())
                     .groupName(user.getGroup().getName())
                     .rate(ratingStudent)
                     .score(score).build();
+
             rateStudentMap.put(resRateStudent, score);
         }
         return rateStudentMap.entrySet().stream()
