@@ -45,6 +45,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     Integer findLessonByStudent(@Param("studentId") UUID studentId);
 
 
+    List<Lesson> findAllByModule_Id(Integer moduleId);
 
 
 }
