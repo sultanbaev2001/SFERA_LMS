@@ -24,7 +24,7 @@ public class    CategoryService {
 
 
     public ApiResponse addCategory(CategoryDTO categoryDTO) {
-        boolean exists = categoryRepository.existsByName(categoryDTO.getName());
+        boolean exists = categoryRepository.existsByNameIgnoreCase(categoryDTO.getName());
         if (!exists){
             Category category = categoryMapper.toEntity(categoryDTO);
             categoryRepository.save(category);
@@ -55,8 +55,8 @@ public class    CategoryService {
     }
 
 
-    public ApiResponse updateCategory(CategoryDTO categoryDTO) {
-        boolean exists = categoryRepository.existsByName(categoryDTO.getName());
+    public ApiResponse updateCategory(CategoryDTO categoryDTO, Integer id) {
+        boolean exists = categoryRepository.existsByNameIgnoreCaseAndIdNot(categoryDTO.getName(), id);
         if (!exists){
             Category category = categoryMapper.toEntity(categoryDTO);
             categoryRepository.save(category);
