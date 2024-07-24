@@ -48,4 +48,20 @@ public class GroupController {
         ApiResponse apiResponse = groupService.deActivateGroup(groupId, active);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+    @Operation(summary = "Admin groupni delete qilish uchun")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable("id") int id){
+        ApiResponse apiResponse = groupService.deleteGroup(id);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+    @Operation(summary = "ADMIN student qo'shguncha categoryasini tanlaganda shu categoryga tegishli grouplar uchun")
+    @PreAuthorize("hasRole('ROLE_ADMIN')or hasRole('ROLE_TEACHER')")
+    @GetMapping("categoryByGroups/{categoryId}")
+    public ResponseEntity<ApiResponse> getCategoryByGroups(@PathVariable("categoryId") int categoryId){
+        ApiResponse apiResponse = groupService.getCategoryByGroups(categoryId);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
 }
