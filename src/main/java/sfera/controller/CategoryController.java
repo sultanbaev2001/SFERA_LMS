@@ -34,9 +34,9 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "ADMIN  Category bittasini get qilish")
-    @GetMapping("/{categoryId}")
-    public HttpEntity<ApiResponse> getOneCategory(@PathVariable Integer categoryId){
-        ApiResponse apiResponse = categoryService.getOneCategory(categoryId);
+    @GetMapping("/{id}")
+    public HttpEntity<ApiResponse> getOneCategory(@PathVariable Integer id){
+        ApiResponse apiResponse = categoryService.getOneCategory(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
@@ -52,9 +52,9 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "ADMIN  Categoryni update qilish")
-    @PutMapping
-    public HttpEntity<ApiResponse> updateCategory(@RequestBody CategoryDTO categoryDTO){
-        ApiResponse apiResponse = categoryService.updateCategory(categoryDTO);
+    @PutMapping("/{id}")
+    public HttpEntity<ApiResponse> updateCategory(@RequestBody CategoryDTO categoryDTO, @PathVariable("id") Integer id){
+        ApiResponse apiResponse = categoryService.updateCategory(categoryDTO, id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
