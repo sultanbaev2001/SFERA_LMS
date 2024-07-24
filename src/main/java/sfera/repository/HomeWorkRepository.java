@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
-    @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student IN :student AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate")
+    @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student IN :student AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate AND hw.score IS NOT NULL")
     Integer findTotalScoreByStudentsAndPeriod(@Param("student") User student, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query(value = "select sum(score) from home_work where student_id=:studentId", nativeQuery = true)
