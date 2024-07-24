@@ -1,12 +1,11 @@
 package sfera.service;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import sfera.entity.File;
-import sfera.entity.Lesson;
+import sfera.entity.*;
 import sfera.entity.Module;
-import sfera.entity.Task;
 import sfera.exception.GenericException;
 import sfera.payload.ApiResponse;
 import sfera.payload.ResLessonDTO;
@@ -36,9 +35,13 @@ public class LessonService {
     private final FileRepository fileRepository;
 
 
-    public ApiResponse saveLesson(ReqLesson lessonDTO){
+    public ApiResponse saveLesson(ReqLesson lessonDTO,User teacher){
+
         Module module = moduleRepository.findById(lessonDTO.getModuleId())
                 .orElseThrow(() -> GenericException.builder().message("Module not found").statusCode(404).build());
+        if (!module.getTeacher().getId().equals(teacher.getId())) {
+            return new ApiResponse("Siz bu modulga lesson qusholmaysiz",HttpStatus.BAD_REQUEST);
+        }
         List<Task> taskList = new ArrayList<>();
         boolean existsed = lessonRepository.existsByNameAndModuleNot(lessonDTO.getName(), module);
         if (!existsed) {
@@ -83,6 +86,25 @@ public class LessonService {
         return new ApiResponse("Success",HttpStatus.OK,lessonDTOList);
     }
 
+
+
+    public ApiResponse getAllLessonByTeacher(User teacher){
+        List<Module> allByTeacherId = moduleRepository.findAllByTeacherId(teacher.getId());
+        List<ResLesson> lessonDTOList = new ArrayList<>();
+        for (Module module : allByTeacherId) {
+            List<Lesson> allByModuleId = lessonRepository.findAllByModule_Id(module.getId());
+            for (Lesson lesson : allByModuleId) {
+                ResLesson lessonDTO= ResLesson.builder()
+                        .lessonId(lesson.getId())
+                        .name(lesson.getName())
+                        .moduleName(module.getOrderName())
+                        .categoryName(module.getCategory().getName())
+                        .build();
+                lessonDTOList.add(lessonDTO);
+            }
+        }
+        return new ApiResponse("Success",HttpStatus.OK,lessonDTOList);
+    }
 
     public ApiResponse getOneLesson(Integer id){
         List<String> videoFileName= new ArrayList<>();
