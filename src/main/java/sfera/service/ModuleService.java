@@ -69,31 +69,41 @@ public class ModuleService {
 
     public ApiResponse updateModule(Integer id,ModuleDTO moduleDTO, User teacher){
         Module module = moduleRepository.findById(id)
-                .orElseThrow(() -> GenericException.builder().message("Modul not found").statusCode(404).build());
+                .orElseThrow(() -> GenericException.builder().message("Module not found").statusCode(404).build());
         Category category = categoryRepository.findById(moduleDTO.getCategoryId())
                 .orElseThrow(() -> GenericException.builder().message("Category not found").statusCode(404).build());
         boolean existsed = moduleRepository.existsByOrderName(moduleDTO.getOrderName());
         if (!existsed){
             module.setId(id);
-            module.setOrderName(module.getOrderName());
+            module.setOrderName(moduleDTO.getOrderName());
             module.setCategory(category);
             module.setTeacher(teacher);
             moduleRepository.save(module);
-            return new ApiResponse("Modul successfully updated",HttpStatus.OK);
+            return new ApiResponse("Module successfully updated",HttpStatus.OK);
         }
         return new ApiResponse("Module already exists",HttpStatus.ALREADY_REPORTED);
     }
 
     public ApiResponse deleteModule(Integer id){
         Module module = moduleRepository.findById(id)
-                .orElseThrow(() -> GenericException.builder().message("Modul not found").statusCode(404).build());
+                .orElseThrow(() -> GenericException.builder().message("Module not found").statusCode(404).build());
         moduleRepository.delete(module);
-        return new ApiResponse("Modul successfully deleted",HttpStatus.OK);
+        return new ApiResponse("Module successfully deleted",HttpStatus.OK);
     }
 
 
     public ApiResponse getModuleByCategoryId(Integer id){
         List<Module> allByCategoryId = moduleRepository.findAllByCategory_Id(id);
-        return new ApiResponse("Success",HttpStatus.OK,allByCategoryId);
+        List<ModuleDTO> moduleDTOs = new ArrayList<>();
+        for (Module module : allByCategoryId) {
+            ModuleDTO moduleDTO= ModuleDTO.builder()
+                    .moduleId(module.getId())
+                    .orderName(module.getOrderName())
+                    .categoryId(module.getCategory().getId())
+                    .teacherId(module.getTeacher().getId())
+                    .build();
+            moduleDTOs.add(moduleDTO);
+        }
+        return new ApiResponse("Success",HttpStatus.OK,moduleDTOs);
     }
 }
