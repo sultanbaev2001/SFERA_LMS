@@ -248,7 +248,7 @@ public class UserService {
         return new ApiResponse("Failed",  HttpStatus.BAD_REQUEST);
     }
 
-    public ApiResponse getStudentsHomework(UUID studentId, Integer lessonId){
+    public ApiResponse getStudentsHomework(Long studentId, Integer lessonId){
         List<StudentHomeworkDTO> studentsHomeworks = homeWorkRepository.getStudentsHomeworks(studentId, lessonId);
         return new ApiResponse("Success", HttpStatus.OK, studentsHomeworks);
     }

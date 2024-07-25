@@ -1,7 +1,6 @@
 package sfera.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.persistence.OneToOne;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +15,6 @@ import sfera.security.CurrentUser;
 import sfera.service.HomeWorkService;
 import sfera.service.UserService;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -154,7 +152,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @Operation(summary = "TEACHER Homework student")
     @GetMapping("/homework")
-    public ResponseEntity<ApiResponse> getHomework(@RequestParam UUID studentId, @RequestParam Integer lessonId) {
+    public ResponseEntity<ApiResponse> getHomework(@RequestParam Long studentId, @RequestParam Integer lessonId) {
         ApiResponse apiResponse = userService.getStudentsHomework(studentId, lessonId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
