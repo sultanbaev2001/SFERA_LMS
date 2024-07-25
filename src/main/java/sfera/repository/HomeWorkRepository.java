@@ -13,7 +13,7 @@ import sfera.payload.teacher_homework.StudentHomeworkDTO;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
+
 
 public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
@@ -97,7 +97,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "inner join task as t on ltl.task_list_id = t.id " +
             "inner join home_work as hm on t.id = hm.task_id where hm.student_id=:studentId " +
             "and hm.score is null and l.id=:lessonId" , nativeQuery = true)
-    List<StudentHomeworkDTO> getStudentsHomeworks(@Param("studentId") UUID studentId, @Param("lessonId") Integer lessonId);
+    List<StudentHomeworkDTO> getStudentsHomeworks(@Param("studentId") Long studentId, @Param("lessonId") Integer lessonId);
 
     @Query(value = "SELECT task_id " +
             "FROM home_work " +
@@ -114,7 +114,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
 
     @Query(value = "UPDATE home_work hw SET score = :inScore WHERE hw.student_id = :studentId AND hw.id = :homeworkId", nativeQuery = true)
-    boolean updateHomeWorkByScore(@Param("studentId") UUID studentId, @Param("homeworkId") Integer homeworkId, @Param("inScore") Integer inScore);
+    boolean updateHomeWorkByScore(@Param("studentId") Long studentId, @Param("homeworkId") Integer homeworkId, @Param("inScore") Integer inScore);
 
 
 }
