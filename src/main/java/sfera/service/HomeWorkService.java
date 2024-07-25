@@ -66,7 +66,7 @@ public class HomeWorkService {
         return score == null ? 0 : (double) score/sum;
     }
 
-    public ApiResponse updateHomeworkScore(UUID studentId, Integer homeworkId, Integer inScore){
+    public ApiResponse updateHomeworkScore(Long studentId, Integer homeworkId, Integer inScore){
 //        boolean updated = homeWorkRepository.updateHomeWorkByScore(studentId, homeworkId, inScore);
         HomeWork homeWork = homeWorkRepository.findById(homeworkId).orElseThrow(() -> GenericException.builder()
                 .message("Homework Not Found")
