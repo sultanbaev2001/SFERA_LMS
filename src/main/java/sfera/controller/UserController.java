@@ -77,7 +77,7 @@ public class UserController {
 
 
     @Operation(summary = "ADMIN/TEACHER Studentni save qilish uchun")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @PostMapping("/saveStudent")
     public ResponseEntity<ApiResponse> saveStudent(@RequestBody ReqStudent studentDTO) {
         ApiResponse apiResponse = userService.saveStudent(studentDTO);
@@ -86,18 +86,26 @@ public class UserController {
 
 
 
-    @Operation(summary = "TEACHER Student panel get qilish uchun")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
-    @GetMapping("/getAllStudents")
-    public ResponseEntity<ApiResponse> getAllStudents(@CurrentUser User user) {
-        ApiResponse apiResponse = userService.getAllStudents(user);
+    @Operation(summary = "TEACHER/ADMIN Student panel get qilish uchun")
+    @PreAuthorize("hasRole('ROLE_TEACHER')")
+    @GetMapping("/getAllStudents/byTeacher")
+    public ResponseEntity<ApiResponse> getAllStudentsByTeacher(@CurrentUser User user) {
+        ApiResponse apiResponse = userService.getAllStudentsByTeacher(user);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
 
+    @Operation(summary = "ADMIN panelidagi student uchun")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/getStudents")
+    public ResponseEntity<ApiResponse> getAllStudents(){
+        ApiResponse apiResponse = userService.getAllStudents();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 
-    @Operation(summary = "TEACHER Studetni update qilish")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+
+    @Operation(summary = "TEACHER/ADMIN Studetni update qilish")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @PutMapping("/updateStudent/{studentId}")
     public ResponseEntity<ApiResponse> updateStudent(@PathVariable Long studentId,@RequestBody ReqStudent studentDTO) {
         ApiResponse apiResponse = userService.updateStudent(studentId,studentDTO);
@@ -106,8 +114,8 @@ public class UserController {
 
 
 
-    @Operation(summary = "TEACHER Studentni delete qilish")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    @Operation(summary = "TEACHER/ADMIN Studentni delete qilish")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @DeleteMapping("/deleteStudent/{studentId}")
     public ResponseEntity<ApiResponse> deleteStudent(@PathVariable Long studentId) {
         ApiResponse apiResponse = userService.deleteStudent(studentId);
@@ -117,7 +125,7 @@ public class UserController {
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
-    @Operation(summary = "TEACHER Studentni activeni update qilish")
+    @Operation(summary = "TEACHER/ADMIN Studentni activeni update qilish")
     @PutMapping("/updateActive/{studentId}")
     public ResponseEntity<ApiResponse> updateActiveInStudent(@PathVariable Long studentId, @RequestParam boolean active) {
         ApiResponse apiResponse = userService.updateActiveInStudent(studentId, active);
@@ -126,7 +134,7 @@ public class UserController {
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
-    @Operation(summary = "TEACHER Dashboard student list")
+    @Operation(summary = "TEACHER/ADMIN Dashboard student list")
     @GetMapping("/teacher/studentList")
     public ResponseEntity<ApiResponse> getStudentByTeacher(@CurrentUser User user) {
         ApiResponse topStudentByTeacher = userService.getTopStudentByTeacher(user);

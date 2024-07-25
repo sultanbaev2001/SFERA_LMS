@@ -12,6 +12,7 @@ import sfera.exception.UserNotFoundException;
 import sfera.payload.ApiResponse;
 import sfera.payload.req.ReqGroup;
 import sfera.payload.res.ResGroup;
+import sfera.payload.res.ResGroupList;
 import sfera.repository.CategoryRepository;
 import sfera.repository.DayOfWeekRepository;
 import sfera.repository.GroupRepository;
@@ -32,7 +33,7 @@ public class GroupService {
 
     public ApiResponse saveGroup(ReqGroup reqGroup){
         List<DayOfWeek> dayOfWeekList=new ArrayList<>();
-        boolean exists = groupRepository.existsByName(reqGroup.getName());
+        boolean exists = groupRepository.existsByNameIgnoreCase(reqGroup.getName());
         Category category = categoryRepository.findById(reqGroup.getCategoryId()).orElseThrow(() -> GenericException.builder()
                 .message("Category not found").statusCode(404).build());
         User teacher = userRepository.findById(reqGroup.getTeacherId()).orElseThrow(UserNotFoundException::new);
@@ -79,7 +80,7 @@ public class GroupService {
 
     public ApiResponse editGroup(int groupId,ReqGroup reqGroup){
         List<DayOfWeek> dayOfWeekList=new ArrayList<>();
-        boolean exists = groupRepository.existsByNameAndIdNot(reqGroup.getName(),groupId);
+        boolean exists = groupRepository.existsByNameIgnoreCaseAndIdNot(reqGroup.getName(),groupId);
         Category category = categoryRepository.findById(reqGroup.getCategoryId()).orElseThrow(() -> GenericException.builder()
                 .message("Category not found").statusCode(404).build());
         Group group = groupRepository.findById(groupId).orElseThrow(() -> GenericException.builder().
@@ -109,6 +110,30 @@ public class GroupService {
                 .message("Group not found").statusCode(404).build());
         group.setActive(active);
         groupRepository.save(group);
-        return new ApiResponse("Group deactivated",true, HttpStatus.OK,group);
+        return new ApiResponse("Group deactivated",true, HttpStatus.OK,null);
+    }
+
+
+    public ApiResponse deleteGroup(int groupId){
+        groupRepository.deleteById(groupId);
+        return new ApiResponse("Group deleted",true, HttpStatus.OK,null);
+    }
+
+    public ApiResponse getCategoryByGroups(int categoryId){
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
+                GenericException.builder().message("Category not found").statusCode(404).build());
+        List<Group> groups = groupRepository.findAllByCategory(category);
+        if (groups.isEmpty()){
+            return new ApiResponse("No groups found",false,HttpStatus.NOT_FOUND,null);
+        }
+        List<ResGroupList> resGroupLists=new ArrayList<>();
+        for (Group group : groups){
+            ResGroupList resGroupList=ResGroupList.builder()
+                    .groupId(group.getId())
+                    .groupName(group.getName())
+                    .build();
+            resGroupLists.add(resGroupList);
+        }
+        return new ApiResponse("Success",true,HttpStatus.OK,resGroupLists);
     }
 }

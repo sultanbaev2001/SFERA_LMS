@@ -2,6 +2,7 @@ package sfera.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import sfera.entity.Category;
 import sfera.entity.Group;
 import sfera.entity.User;
 
@@ -14,9 +15,11 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     List<Group> findAllByTeacherId(Long teacherId);
 
-    boolean existsByName(String name);
+    boolean existsByNameIgnoreCase(String name);
 
-    boolean existsByNameAndIdNot(String name, int id);
+    boolean existsByNameIgnoreCaseAndIdNot(String name, int id);
 
     List<Group> findAllByActiveTrue();
+
+    List<Group> findAllByCategory(Category category);
 }

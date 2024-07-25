@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
-    @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student IN :student AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate")
+    @Query("SELECT SUM(hw.score) FROM HomeWork hw WHERE hw.student IN :student AND hw.dueDate >= :startDate AND hw.dueDate <= :endDate AND hw.score IS NOT NULL")
     Integer findTotalScoreByStudentsAndPeriod(@Param("student") User student, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query(value = "select sum(score) from home_work where student_id=:studentId", nativeQuery = true)
@@ -88,7 +88,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
 
     @Query(value = "select concat(s.firstname, s,lastname) as fullName, t.name, g.name, " +
-            "m.order_name, hw.due_date, from users as s " +
+            "m.order_name, hm.due_date from users as s " +
             "inner join groups as g on s.group_id=g.id " +
             "inner join lesson_tracking as lt on g.id = lt.group_id " +
             "inner join lesson as l on l.id = lt.lesson_id " +
@@ -105,7 +105,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     List<Integer> getTaskIds(List<Integer> ids);
 
 
-    @Query(value = "SELECT s.* FROM user AS s " +
+    @Query(value = "SELECT s.* FROM users AS s " +
             "INNER JOIN home_work AS hm ON hm.student_id = s.id " +
             "INNER JOIN groups AS g ON g.id = s.group_id " +
             "WHERE hm.score IS NULL " +
@@ -114,7 +114,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
 
 
     @Query(value = "UPDATE home_work hw SET score = :inScore WHERE hw.student_id = :studentId AND hw.id = :homeworkId", nativeQuery = true)
-    boolean updateHomeWorkByScore(@Param("studentId") Long studentId, @Param("homeworkId") Integer homeworkId, @Param("inScore") Integer inScore);
+    boolean updateHomeWorkByScore(@Param("studentId") UUID studentId, @Param("homeworkId") Integer homeworkId, @Param("inScore") Integer inScore);
 
 
 }

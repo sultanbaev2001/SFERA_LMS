@@ -40,4 +40,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByGroupAndRoleAndActiveTrue(Group group, ERole role);
     List<User> findAllByGroupId(Integer groupId);
     List<User> findAllByRoleAndGroup_Teacher(ERole role, User teacher);
+
+    @Query(value = "SELECT u.* FROM users u " +
+            "INNER JOIN groups g ON g.id = u.group_id " +
+            "INNER JOIN category c ON c.id = g.category_id " +
+            "WHERE (?1 IS NULL OR LOWER(u.firstname) LIKE LOWER(CONCAT('%', ?1, '%')) " +
+            "OR ?1 IS NULL OR LOWER(u.lastname) LIKE LOWER(CONCAT('%', ?1, '%'))) " +
+            "AND (?2 IS NULL OR g.id = ?2) " +
+            "AND (?3 IS NULL OR c.id = ?3)", nativeQuery = true)
+    List<User> findAlLByStudentSearchAndGroupIdAndCategoryId(String name, Integer groupId, Integer categoryId);
+    ;
+
 }
