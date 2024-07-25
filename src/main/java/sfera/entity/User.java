@@ -24,8 +24,8 @@ import java.util.UUID;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String firstname;
     private String lastname;
     @Column(nullable = false, unique = true)

@@ -17,6 +17,6 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
     List<Module> findAllByCategory_Id(Integer categoryId);
 
     Module findByOrderName(String name);
-    List<Module> findAllByTeacherId(UUID teacherId);
+    List<Module> findAllByTeacherId(Long teacherId);
 
 }

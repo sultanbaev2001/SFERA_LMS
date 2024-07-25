@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class TopStudentDTO {
-    private UUID studentId;
+    private Long studentId;
     private String fullName;
     private String groupName;
     private Integer score;

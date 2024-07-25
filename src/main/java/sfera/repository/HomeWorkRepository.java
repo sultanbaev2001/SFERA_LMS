@@ -21,7 +21,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
     Integer findTotalScoreByStudentsAndPeriod(@Param("student") User student, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query(value = "select sum(score) from home_work where student_id=:studentId", nativeQuery = true)
-    int findAllScoreByStudent(@Param("studentId") UUID studentId);
+    int findAllScoreByStudent(@Param("studentId") Long studentId);
 
     @Query(value = "select count(*) as count  from (select sum(score) from home_work h" +
             " inner join users u on h.student_id = u.id where u.group_id=:groupId group by u) as subquery", nativeQuery = true)
@@ -39,7 +39,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "SELECT position\n" +
             "FROM ranked_users\n" +
             "WHERE id = :userId;" ,nativeQuery = true)
-    Integer getRatingStudent(@Param("groupId") Integer groupId, @Param("userId") UUID userId);
+    Integer getRatingStudent(@Param("groupId") Integer groupId, @Param("userId") Long userId);
 
     List<HomeWork> findAllByDueDateBetweenAndStudent(LocalDate startDate, LocalDate endDate,User user);
 
@@ -73,7 +73,7 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "JOIN u.group g WHERE g.teacher.id=:teacherId AND hw.score IS NOT NULL " +
             "GROUP BY g.name, month " +
             "ORDER BY g.name, month")
-    List<GroupStatistics> findGroupStatisticsByTeacher(@Param("teacherId") UUID teacherId);
+    List<GroupStatistics> findGroupStatisticsByTeacher(@Param("teacherId") Long teacherId);
 
 
 
@@ -110,14 +110,11 @@ public interface HomeWorkRepository extends JpaRepository<HomeWork, Integer> {
             "INNER JOIN groups AS g ON g.id = s.group_id " +
             "WHERE hm.score IS NULL " +
             "AND g.teacher_id = :teacherId", nativeQuery = true)
-    List<User> getStudentList(@Param("teacherId") UUID teacherId);
+    List<User> getStudentList(@Param("teacherId") Long teacherId);
 
 
-//    @Query(value = "UPDATE home_work hw SET score = :inScore WHERE hw.student_id = :studentId AND hw.id = :homeworkId",
-//            nativeQuery = true)
-//    boolean updateHomeWorkByScore(@Param("studentId") UUID studentId,
-//                                  @Param("homeworkId") Integer homeworkId,
-//                                  @Param("inScore") Integer inScore);
+    @Query(value = "UPDATE home_work hw SET score = :inScore WHERE hw.student_id = :studentId AND hw.id = :homeworkId", nativeQuery = true)
+    boolean updateHomeWorkByScore(@Param("studentId") UUID studentId, @Param("homeworkId") Integer homeworkId, @Param("inScore") Integer inScore);
 
 
 }
