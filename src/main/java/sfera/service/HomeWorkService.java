@@ -64,7 +64,7 @@ public class HomeWorkService {
         return (double) score/sum;
     }
 
-    public ApiResponse updateHomeworkScore(UUID studentId, Integer homeworkId, Integer inScore){
+    public ApiResponse updateHomeworkScore(Long studentId, Integer homeworkId, Integer inScore){
         boolean updated = homeWorkRepository.updateHomeWorkByScore(studentId, homeworkId, inScore);
         if (updated){
             return new ApiResponse("Success", HttpStatus.OK, null);

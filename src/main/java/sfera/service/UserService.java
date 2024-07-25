@@ -76,7 +76,7 @@ public class UserService {
         return new ApiResponse("Successfully retrieved users",true, HttpStatus.OK,resTeachers);
     }
 
-    public ApiResponse getTeacher(UUID teacherId){
+    public ApiResponse getTeacher(Long teacherId){
         User user = userRepository.findById(teacherId).orElseThrow(UserNotFoundException::new);
         List<Group> groups = groupRepository.findAllByTeacherId(user.getId());
         List<ResGroupStudentCount> resGroupStudentCounts=new ArrayList<>();
@@ -101,13 +101,13 @@ public class UserService {
         return new ApiResponse("Success",true, HttpStatus.OK,teacherDto);
     }
 
-    public  ApiResponse deActiveTeacher(UUID teacherId, Boolean active){
+    public  ApiResponse deActiveTeacher(Long teacherId, Boolean active){
         User user = userRepository.findById(teacherId).orElseThrow(UserNotFoundException::new);
         user.setActive(active);
         return new ApiResponse("Successfully edited user",true, HttpStatus.OK,user);
     }
 
-    public ApiResponse editTeacher(UUID teacherId, ReqTeacher reqTeacher){
+    public ApiResponse editTeacher(Long teacherId, ReqTeacher reqTeacher){
         User user = userRepository.findById(teacherId).orElseThrow(UserNotFoundException::new);
         user.setFirstname(reqTeacher.getFirstName());
         user.setLastname(reqTeacher.getLastName());
@@ -163,7 +163,7 @@ public class UserService {
     }
 
 
-    public ApiResponse updateStudent(UUID id,ReqStudent studentDTO) {
+    public ApiResponse updateStudent(Long id,ReqStudent studentDTO) {
         User student = userRepository.findById(id)
                 .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
         Group group = groupRepository.findById(studentDTO.getGroupId())
@@ -179,7 +179,7 @@ public class UserService {
     }
 
 
-    public ApiResponse deleteStudent(UUID id){
+    public ApiResponse deleteStudent(Long id){
         User student = userRepository.findById(id)
                 .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
         userRepository.delete(student);
@@ -187,7 +187,7 @@ public class UserService {
     }
 
 
-    public ApiResponse updateActiveInStudent(UUID id, boolean active){
+    public ApiResponse updateActiveInStudent(Long id, boolean active){
         User student = userRepository.findById(id)
                 .orElseThrow(() -> GenericException.builder().message("Student not found").statusCode(404).build());
         student.setActive(active);

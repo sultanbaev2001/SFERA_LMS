@@ -29,7 +29,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
             "inner join category as c on g.category_id=c.id inner join module as m on c.id = m.category_id " +
             "inner join lesson as l on m.id = l.module_id left join lesson_tracking as t on l.id = t.lesson_id " +
             "where u.id=:userId order by l.id", nativeQuery = true)
-    List<LessonsDTO> findAllStudentsLessons(@Param("userId") UUID userId);
+    List<LessonsDTO> findAllStudentsLessons(@Param("userId") Long userId);
 
     @Query(value = "select l.*, v.file_name from  lesson_video_file as lvf " +
             "right join lesson as l ON lvf.lesson_id = l.id " +
@@ -42,7 +42,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
             "JOIN groups g ON lt.group_id = g.id " +
             "JOIN users s ON s.group_id = g.id " +
             "WHERE s.id = :studentId", nativeQuery = true)
-    Integer findLessonByStudent(@Param("studentId") UUID studentId);
+    Integer findLessonByStudent(@Param("studentId") Long studentId);
 
 
     List<Lesson> findAllByModule_Id(Integer moduleId);

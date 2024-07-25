@@ -28,7 +28,7 @@ public class StudentService {
     private final TaskRepository taskRepository;
     private final FileRepository fileRepository;
 
-    public ApiResponse getCountAllAndAvailableLessonsAndScoreAndRate(UUID id){
+    public ApiResponse getCountAllAndAvailableLessonsAndScoreAndRate(Long id){
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         Category category = categoryRepository.findById(user.getGroup().getCategory().getId())
                 .orElseThrow(GenericException::new);

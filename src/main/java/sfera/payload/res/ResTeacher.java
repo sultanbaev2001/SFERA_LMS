@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 public class ResTeacher {
 
-    private UUID teacherID;
+    private Long teacherID;
     private String firstName;
     private String lastName;
     private String phoneNumber;

@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sfera.entity.Category;
 import sfera.entity.Group;
-import sfera.entity.HomeWork;
 import sfera.entity.User;
 import sfera.entity.enums.ERole;
 import sfera.payload.ApiResponse;
