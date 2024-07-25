@@ -49,7 +49,7 @@ public class UserController {
     @Operation(summary = "ADMIN Bitta teacherni kurish uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/teacher-see/{teacherId}")
-    public ResponseEntity<ApiResponse> getTeacherSee(@PathVariable UUID teacherId) {
+    public ResponseEntity<ApiResponse> getTeacherSee(@PathVariable Long teacherId) {
         ApiResponse apiResponse = userService.getTeacher(teacherId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -59,7 +59,7 @@ public class UserController {
     @Operation(summary = "ADMIN teacherni activligini uzgartirish uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/teacher-deActivate/{teacherId}")
-    public ResponseEntity<ApiResponse> updateTeacher(@PathVariable UUID teacherId,@RequestParam Boolean active){
+    public ResponseEntity<ApiResponse> updateTeacher(@PathVariable Long teacherId,@RequestParam Boolean active){
         ApiResponse apiResponse = userService.deActiveTeacher(teacherId, active);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -69,7 +69,7 @@ public class UserController {
     @Operation(summary = "ADMIN Teacherni update qilish uchun")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("update-teacher/{teacherId}")
-    public ResponseEntity<ApiResponse> updateTeacher(@PathVariable UUID teacherId,@RequestBody ReqTeacher reqTeacher){
+    public ResponseEntity<ApiResponse> updateTeacher(@PathVariable Long teacherId,@RequestBody ReqTeacher reqTeacher){
         ApiResponse apiResponse = userService.editTeacher(teacherId, reqTeacher);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -107,7 +107,7 @@ public class UserController {
     @Operation(summary = "TEACHER/ADMIN Studetni update qilish")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @PutMapping("/updateStudent/{studentId}")
-    public ResponseEntity<ApiResponse> updateStudent(@PathVariable UUID studentId,@RequestBody ReqStudent studentDTO) {
+    public ResponseEntity<ApiResponse> updateStudent(@PathVariable Long studentId,@RequestBody ReqStudent studentDTO) {
         ApiResponse apiResponse = userService.updateStudent(studentId,studentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -117,7 +117,7 @@ public class UserController {
     @Operation(summary = "TEACHER/ADMIN Studentni delete qilish")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @DeleteMapping("/deleteStudent/{studentId}")
-    public ResponseEntity<ApiResponse> deleteStudent(@PathVariable UUID studentId) {
+    public ResponseEntity<ApiResponse> deleteStudent(@PathVariable Long studentId) {
         ApiResponse apiResponse = userService.deleteStudent(studentId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -127,7 +127,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
     @Operation(summary = "TEACHER/ADMIN Studentni activeni update qilish")
     @PutMapping("/updateActive/{studentId}")
-    public ResponseEntity<ApiResponse> updateActiveInStudent(@PathVariable UUID studentId, @RequestParam boolean active) {
+    public ResponseEntity<ApiResponse> updateActiveInStudent(@PathVariable Long studentId, @RequestParam boolean active) {
         ApiResponse apiResponse = userService.updateActiveInStudent(studentId, active);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
@@ -162,7 +162,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @Operation(summary = "TEACHER Homework ball qoyishi")
     @GetMapping("/homework/score")
-    public ResponseEntity<ApiResponse> updateHomeworkScore(@RequestParam UUID studentId, @RequestParam Integer homeworkId, @RequestParam Integer inScore) {
+    public ResponseEntity<ApiResponse> updateHomeworkScore(@RequestParam Long studentId, @RequestParam Integer homeworkId, @RequestParam Integer inScore) {
         ApiResponse apiResponse = homeWorkService.updateHomeworkScore(studentId, homeworkId, inScore);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }

@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class StudentListDto {
-    private UUID studentId;
+    private Long studentId;
     private String fullName;
     private Integer lessonId;
 }

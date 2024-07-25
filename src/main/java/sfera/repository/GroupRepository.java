@@ -13,7 +13,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     Integer countByActiveTrue();
 
-    List<Group> findAllByTeacherId(UUID teacherId);
+    List<Group> findAllByTeacherId(Long teacherId);
 
     boolean existsByNameIgnoreCase(String name);
 

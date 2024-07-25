@@ -19,7 +19,7 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
             "join task as t on ltl.task_list_id = t.id " +
             "where lt.group_id=:groupId and lt.active is true and " +
             "t.id not in (select task_id from home_work where student_id=:studentId); ",nativeQuery = true)
-    List<Task> studentTasks(@Param("groupId") Integer groupId, @Param("studentId") UUID studentId);
+    List<Task> studentTasks(@Param("groupId") Integer groupId, @Param("studentId") Long studentId);
 
 
 
